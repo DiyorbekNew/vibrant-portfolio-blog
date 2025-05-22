@@ -3,15 +3,18 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useLanguage } from "../hooks/useLanguage";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
 
   const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Projects", path: "/projects" },
-    { name: "Blog", path: "/blog" }
+    { name: t("nav.home"), path: "/" },
+    { name: t("nav.projects"), path: "/projects" },
+    { name: t("nav.blog"), path: "/blog" }
   ];
 
   const toggleMenu = () => {
@@ -42,14 +45,22 @@ const Navbar: React.FC = () => {
           ))}
         </nav>
 
-        {/* Mobile Menu Button */}
-        <button
-          onClick={toggleMenu}
-          className="md:hidden text-primary"
-          aria-label="Toggle menu"
-        >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Language Switcher - Desktop */}
+        <div className="hidden md:block">
+          <LanguageSwitcher />
+        </div>
+
+        {/* Mobile Menu Button and Language Switcher */}
+        <div className="md:hidden flex items-center gap-4">
+          <LanguageSwitcher />
+          <button
+            onClick={toggleMenu}
+            className="text-primary"
+            aria-label="Toggle menu"
+          >
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Navigation */}
