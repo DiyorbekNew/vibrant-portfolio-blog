@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
 import BlogCard from "../components/BlogCard";
-import { projects } from "../data/projects";
 import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
@@ -25,11 +24,47 @@ interface BlogPost {
   views_count: number;
 }
 
+interface Technology {
+  id: number;
+  technology: string;
+}
+
+interface Category {
+  id: number;
+  title: string;
+}
+
+interface Project {
+  id: number;
+  technologies: Technology[];
+  category: Category;
+  title: string;
+  description: string;
+  body: string;
+  image_url: string;
+  demo_url?: string;
+  slug: string;
+}
+
 const Index: React.FC = () => {
   const { t, language } = useLanguage();
 
-  // Get featured projects
-  const featuredProjects = projects.filter(project => project.featured);
+  // Fetch projects from API
+  const { data: projects = [] } = useQuery({
+    queryKey: ['projects', language],
+    queryFn: async () => {
+      const response = await fetch('https://api.xazratqulov.uz/project/projects/', {
+        headers: {
+          'Accept-Language': language
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      return response.json() as Promise<Project[]>;
+    }
+  });
+
+  // Get featured projects (first 3 projects for now)
+  const featuredProjects = projects.slice(0, 3);
 
   // Fetch posts from API
   const { data: posts = [] } = useQuery({
