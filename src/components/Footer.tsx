@@ -2,10 +2,33 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useLanguage } from "../hooks/useLanguage";
+import { useQuery } from "@tanstack/react-query";
+
+interface GeneralData {
+  id: number;
+  email: string;
+  phone: string;
+  github: string;
+  linkedin: string;
+}
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  
+  // Fetch general data from API
+  const { data: generalData } = useQuery({
+    queryKey: ['generalData', language],
+    queryFn: async () => {
+      const response = await fetch('https://api.xazratqulov.uz/general-datas/', {
+        headers: {
+          'Accept-Language': language
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch general data');
+      return response.json() as Promise<GeneralData>;
+    }
+  });
   
   return (
     <footer className="bg-secondary py-12">
@@ -39,16 +62,13 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">{t("footer.contact")}</h3>
             <ul className="space-y-2">
-              <li className="text-muted-foreground">Email: info@example.com</li>
-              <li className="text-muted-foreground">Phone: +998 90 123 45 67</li>
+              <li className="text-muted-foreground">Email: {generalData?.email || 'info@example.com'}</li>
+              <li className="text-muted-foreground">Phone: {generalData?.phone || '+998 90 123 45 67'}</li>
               <li className="flex space-x-4 mt-4">
-                <a href="https://twitter.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
-                  Twitter
-                </a>
-                <a href="https://github.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                <a href={generalData?.github || "https://github.com/"} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
                   GitHub
                 </a>
-                <a href="https://linkedin.com/" target="_blank" rel="noopener noreferrer" className="hover:text-primary">
+                <a href={generalData?.linkedin || "https://linkedin.com/"} target="_blank" rel="noopener noreferrer" className="hover:text-primary">
                   LinkedIn
                 </a>
               </li>
