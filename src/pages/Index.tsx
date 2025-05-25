@@ -5,14 +5,48 @@ import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
 import BlogCard from "../components/BlogCard";
 import { projects } from "../data/projects";
-import { blogPosts } from "../data/posts";
 import { useLanguage } from "../hooks/useLanguage";
+import { useQuery } from "@tanstack/react-query";
+
+interface Theme {
+  id: number;
+  title: string;
+}
+
+interface BlogPost {
+  id: number;
+  themes: Theme[];
+  title: string;
+  description: string;
+  body: string;
+  image_url: string;
+  created_at: string;
+  slug: string;
+  views_count: number;
+}
 
 const Index: React.FC = () => {
-  // Get featured projects and posts
+  const { t, language } = useLanguage();
+
+  // Get featured projects
   const featuredProjects = projects.filter(project => project.featured);
-  const featuredPosts = blogPosts.filter(post => post.featured);
-  const { t } = useLanguage();
+
+  // Fetch posts from API
+  const { data: posts = [] } = useQuery({
+    queryKey: ['posts', language],
+    queryFn: async () => {
+      const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
+        headers: {
+          'Accept-Language': language
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return response.json() as Promise<BlogPost[]>;
+    }
+  });
+
+  // Get featured posts (first 3 posts for now)
+  const featuredPosts = posts.slice(0, 3);
 
   return (
     <Layout>
