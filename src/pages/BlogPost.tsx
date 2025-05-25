@@ -2,35 +2,78 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/Layout";
-import { blogPosts } from "../data/posts";
 import { Calendar, Eye, ArrowLeft } from "lucide-react";
+import { useLanguage } from "../hooks/useLanguage";
+import { useQuery } from "@tanstack/react-query";
+
+interface Theme {
+  id: number;
+  title: string;
+}
+
+interface BlogPost {
+  id: number;
+  themes: Theme[];
+  title: string;
+  description: string;
+  body: string;
+  image_url: string;
+  created_at: string;
+  slug: string;
+  views_count: number;
+}
 
 const BlogPost: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: slug } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { language, t } = useLanguage();
   
-  // Find the post by id
-  const post = blogPosts.find((post) => post.id === Number(id));
+  // Fetch all posts to find the current one and related posts
+  const { data: posts = [] } = useQuery({
+    queryKey: ['posts', language],
+    queryFn: async () => {
+      const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
+        headers: {
+          'Accept-Language': language
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return response.json() as Promise<BlogPost[]>;
+    }
+  });
+
+  // Find the current post by slug
+  const post = posts.find((post) => post.slug === slug);
   
-  // Get related posts (same tags)
+  // Get related posts (same themes)
   const relatedPosts = post
-    ? blogPosts
+    ? posts
         .filter(
-          (p) => p.id !== post.id && p.tags.some((tag) => post.tags.includes(tag))
+          (p) => p.id !== post.id && p.themes.some((theme) => post.themes.some(postTheme => postTheme.id === theme.id))
         )
         .slice(0, 3)
     : [];
 
   useEffect(() => {
-    if (!post) {
+    if (posts.length > 0 && !post) {
       navigate("/blog", { replace: true });
     }
     
     // Scroll to top when post loads
     window.scrollTo(0, 0);
-  }, [post, navigate]);
+  }, [post, navigate, posts.length]);
 
-  if (!post) return null;
+  if (!post && posts.length > 0) return null;
+
+  if (!post) {
+    return (
+      <Layout>
+        <div className="container py-16 text-center">
+          <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -46,11 +89,11 @@ const BlogPost: React.FC = () => {
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Calendar size={16} />
-              <span>{post.date}</span>
+              <span>{post.created_at}</span>
             </div>
             <div className="flex items-center gap-1">
               <Eye size={16} />
-              <span>{post.views} views</span>
+              <span>{post.views_count} views</span>
             </div>
           </div>
         </div>
@@ -60,7 +103,7 @@ const BlogPost: React.FC = () => {
       <div className="container max-w-4xl my-8">
         <div className="aspect-video w-full rounded-lg overflow-hidden">
           <img 
-            src={post.image} 
+            src={post.image_url} 
             alt={post.title} 
             className="w-full h-full object-cover"
           />
@@ -71,19 +114,18 @@ const BlogPost: React.FC = () => {
       <article className="container max-w-3xl my-8">
         <div 
           className="prose prose-lg max-w-none"
-          dangerouslySetInnerHTML={{ __html: post.content }}
+          dangerouslySetInnerHTML={{ __html: post.body }}
         />
         
         {/* Tags */}
         <div className="mt-12 flex flex-wrap gap-2">
-          {post.tags.map((tag) => (
-            <Link 
-              key={tag} 
-              to={`/blog?tag=${tag}`}
+          {post.themes.map((theme) => (
+            <span 
+              key={theme.id}
               className="px-3 py-1 bg-secondary rounded-full text-sm"
             >
-              {tag}
-            </Link>
+              {theme.title}
+            </span>
           ))}
         </div>
       </article>
@@ -98,16 +140,16 @@ const BlogPost: React.FC = () => {
                 <div key={relatedPost.id} className="bg-card rounded-lg overflow-hidden shadow-md">
                   <div className="aspect-video w-full overflow-hidden">
                     <img 
-                      src={relatedPost.image} 
+                      src={relatedPost.image_url} 
                       alt={relatedPost.title} 
                       className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                     />
                   </div>
                   <div className="p-5">
                     <h3 className="text-lg font-semibold mb-2">{relatedPost.title}</h3>
-                    <p className="text-muted-foreground line-clamp-2 mb-4">{relatedPost.excerpt}</p>
+                    <p className="text-muted-foreground line-clamp-2 mb-4">{relatedPost.description}</p>
                     <Link 
-                      to={`/blog/${relatedPost.id}`} 
+                      to={`/blog/${relatedPost.slug}`} 
                       className="text-primary hover:underline font-medium"
                     >
                       Read More
