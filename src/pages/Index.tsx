@@ -140,7 +140,7 @@ const Index: React.FC = () => {
                         <span className="text-2xl">👨‍💻</span>
                       </div>
                       <h3 className="text-xl font-semibold">Diyorbek Xazratqulov</h3>
-                      <p className="text-muted-foreground mt-2">Full Stack Developer</p>
+                      <p className="text-muted-foreground mt-2">Backend Developer</p>
                     </div>
                   </div>
                 </div>
@@ -153,7 +153,7 @@ const Index: React.FC = () => {
       {/* Latest Projects Section */}
       <section className="section bg-gradient-to-br from-secondary/50 to-accent/20">
         <div className="container">
-          <div className="flex justify-between items-center mb-12">
+          <div className="flex justify-between items-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               {t("projects.latestTitle")}
             </h2>
@@ -163,7 +163,7 @@ const Index: React.FC = () => {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {featuredProjects.map((project, index) => (
               <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <ProjectCard project={project} />
@@ -176,7 +176,7 @@ const Index: React.FC = () => {
       {/* Latest Posts Section */}
       <section className="section">
         <div className="container">
-          <div className="flex justify-between items-center mb-12">
+          <div className="flex justify-between items-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               {t("blog.latestTitle")}
             </h2>
@@ -186,7 +186,7 @@ const Index: React.FC = () => {
             </Link>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {featuredPosts.map((post, index) => (
               <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <BlogCard post={post} />
