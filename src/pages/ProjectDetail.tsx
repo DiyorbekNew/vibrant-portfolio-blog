@@ -36,16 +36,13 @@ const ProjectDetail: React.FC = () => {
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', slug, language],
     queryFn: async () => {
-      const response = await fetch(`https://api.xazratqulov.uz/project/projects/?search=${slug}`, {
+      const response = await fetch(`https://api.xazratqulov.uz/project/projects/${slug}/`, {
         headers: {
           'Accept-Language': language
         }
       });
       if (!response.ok) throw new Error('Failed to fetch project');
-      const projects = await response.json() as Project[];
-      const foundProject = projects.find(p => p.slug === slug);
-      if (!foundProject) throw new Error('Project not found');
-      return foundProject;
+      return response.json() as Project;
     },
     enabled: !!slug
   });
@@ -129,7 +126,6 @@ const ProjectDetail: React.FC = () => {
         {/* Project Content */}
         <div className="max-w-4xl mx-auto">
           <div 
-            className="prose prose-lg max-w-none"
             dangerouslySetInnerHTML={{ __html: project.body }}
           />
         </div>

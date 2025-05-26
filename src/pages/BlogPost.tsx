@@ -28,7 +28,22 @@ const BlogPost: React.FC = () => {
   const navigate = useNavigate();
   const { language, t } = useLanguage();
   
-  // Fetch all posts to find the current one and related posts
+  // Fetch the specific post using slug
+  const { data: post, isLoading, error } = useQuery({
+    queryKey: ['post', slug, language],
+    queryFn: async () => {
+      const response = await fetch(`https://api.xazratqulov.uz/blog/post/${slug}/`, {
+        headers: {
+          'Accept-Language': language
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch post');
+      return response.json() as BlogPost;
+    },
+    enabled: !!slug
+  });
+  
+  // Fetch all posts to find related posts
   const { data: posts = [] } = useQuery({
     queryKey: ['posts', language],
     queryFn: async () => {
@@ -42,9 +57,6 @@ const BlogPost: React.FC = () => {
     }
   });
 
-  // Find the current post by slug
-  const post = posts.find((post) => post.slug === slug);
-  
   // Get related posts (same themes)
   const relatedPosts = post
     ? posts
@@ -55,21 +67,30 @@ const BlogPost: React.FC = () => {
     : [];
 
   useEffect(() => {
-    if (posts.length > 0 && !post) {
+    if (error) {
       navigate("/blog", { replace: true });
     }
     
     // Scroll to top when post loads
     window.scrollTo(0, 0);
-  }, [post, navigate, posts.length]);
+  }, [error, navigate]);
 
-  if (!post && posts.length > 0) return null;
-
-  if (!post) {
+  if (isLoading) {
     return (
       <Layout>
         <div className="container py-16 text-center">
           <p className="text-muted-foreground">Loading...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <Layout>
+        <div className="container py-16 text-center">
+          <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
+          <p className="text-muted-foreground">The blog post you're looking for doesn't exist.</p>
         </div>
       </Layout>
     );
@@ -113,7 +134,6 @@ const BlogPost: React.FC = () => {
       {/* Post Content */}
       <article className="container max-w-3xl my-8">
         <div 
-          className="prose prose-lg max-w-none"
           dangerouslySetInnerHTML={{ __html: post.body }}
         />
         
