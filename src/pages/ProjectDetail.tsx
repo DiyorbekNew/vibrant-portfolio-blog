@@ -42,7 +42,7 @@ const ProjectDetail: React.FC = () => {
         }
       });
       if (!response.ok) throw new Error('Failed to fetch project');
-      return response.json() as Project;
+      return response.json();
     },
     enabled: !!slug
   });

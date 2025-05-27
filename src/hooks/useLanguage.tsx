@@ -10,6 +10,7 @@ const translations = {
     "nav.blog": "Blog",
     
     // Hero section
+    "hero.greeting": "👋 Hello, I'm Diyorbek Xazratqulov",
     "hero.title": "Python Backend Developer",
     "hero.subtitle": "I build robust and scalable backend solutions with Python.",
     "hero.viewWork": "View My Work",
@@ -25,12 +26,14 @@ const translations = {
     "projects.latestTitle": "Latest Projects",
     "projects.viewAll": "View All Projects",
     "projects.search": "Search projects...",
+    "projects.description": "Explore my latest work and personal projects",
     
     // Blog section
     "blog.title": "Blog",
     "blog.latestTitle": "Latest Posts",
     "blog.viewAll": "View All Posts",
     "blog.search": "Search posts...",
+    "blog.description": "Thoughts, tutorials, and insights on web development",
     
     // Footer
     "footer.about": "About",
@@ -45,6 +48,7 @@ const translations = {
     "nav.blog": "Blog",
     
     // Hero section
+    "hero.greeting": "👋 Salom, men Diyorbek Xazratqulov",
     "hero.title": "Python Backend Dasturchi",
     "hero.subtitle": "Python orqali ishonchli va kengayadigan backend yechimlarni yarataman.",
     "hero.viewWork": "Ishlarimni Ko'ring",
@@ -60,12 +64,14 @@ const translations = {
     "projects.latestTitle": "So'nggi Loyihalar",
     "projects.viewAll": "Barcha Loyihalarni Ko'rish",
     "projects.search": "Loyihalarni qidirish...",
+    "projects.description": "Mening so'nggi ishlarim va shaxsiy loyihalarimni ko'ring",
     
     // Blog section
     "blog.title": "Blog",
     "blog.latestTitle": "So'nggi Postlar",
     "blog.viewAll": "Barcha Postlarni Ko'rish",
     "blog.search": "Postlarni qidirish...",
+    "blog.description": "Veb-dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar",
     
     // Footer
     "footer.about": "Haqida",

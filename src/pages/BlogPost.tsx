@@ -38,7 +38,7 @@ const BlogPost: React.FC = () => {
         }
       });
       if (!response.ok) throw new Error('Failed to fetch post');
-      return response.json() as BlogPost;
+      return response.json();
     },
     enabled: !!slug
   });
@@ -53,7 +53,7 @@ const BlogPost: React.FC = () => {
         }
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
-      return response.json() as Promise<BlogPost[]>;
+      return response.json();
     }
   });
 

@@ -78,7 +78,7 @@ const Blog: React.FC = () => {
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("blog.title")}</h1>
           <p className="text-xl text-muted-foreground">
-            Thoughts, tutorials, and insights on web development
+            {t("blog.description")}
           </p>
         </div>
       </section>
