@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "./ThemeToggle";
 import { useLanguage } from "../hooks/useLanguage";
 
 const Navbar: React.FC = () => {
@@ -22,7 +23,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="border-b sticky top-0 bg-background z-50">
+    <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
       <div className="container py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-xl font-semibold">Portfolio</Link>
@@ -45,17 +46,19 @@ const Navbar: React.FC = () => {
           ))}
         </nav>
 
-        {/* Language Switcher - Desktop */}
-        <div className="hidden md:block">
+        {/* Desktop Controls */}
+        <div className="hidden md:flex items-center gap-4">
           <LanguageSwitcher />
+          <ThemeToggle />
         </div>
 
-        {/* Mobile Menu Button and Language Switcher */}
-        <div className="md:hidden flex items-center gap-4">
+        {/* Mobile Controls */}
+        <div className="md:hidden flex items-center gap-2">
           <LanguageSwitcher />
+          <ThemeToggle />
           <button
             onClick={toggleMenu}
-            className="text-primary"
+            className="text-primary ml-2"
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -65,7 +68,7 @@ const Navbar: React.FC = () => {
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <nav className="md:hidden py-4 bg-background border-t">
+        <nav className="md:hidden py-4 bg-background/95 backdrop-blur border-t">
           <div className="container flex flex-col space-y-4">
             {navLinks.map((link) => (
               <Link
