@@ -131,13 +131,13 @@ const BlogPost: React.FC = () => {
         </div>
       </div>
       
-      {/* Post Content */}
-      <article className="container max-w-3xl my-8">
-        <div 
-          dangerouslySetInnerHTML={{ __html: post.body }}
-        />
-        
-        {/* Tags */}
+      {/* Post Content - Remove wrapper styling, let CKEditor styles take precedence */}
+      <div 
+        dangerouslySetInnerHTML={{ __html: post.body }}
+      />
+      
+      {/* Tags */}
+      <div className="container max-w-3xl my-8">
         <div className="mt-12 flex flex-wrap gap-2">
           {post.themes.map((theme) => (
             <span 
@@ -148,7 +148,7 @@ const BlogPost: React.FC = () => {
             </span>
           ))}
         </div>
-      </article>
+      </div>
       
       {/* Related Posts */}
       {relatedPosts.length > 0 && (

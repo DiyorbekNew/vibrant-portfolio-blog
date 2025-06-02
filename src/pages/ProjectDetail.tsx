@@ -123,12 +123,10 @@ const ProjectDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Project Content */}
-        <div className="max-w-4xl mx-auto">
-          <div 
-            dangerouslySetInnerHTML={{ __html: project.body }}
-          />
-        </div>
+        {/* Project Content - Remove any wrapper styling */}
+        <div 
+          dangerouslySetInnerHTML={{ __html: project.body }}
+        />
       </div>
     </Layout>
   );
