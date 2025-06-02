@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/Layout";
@@ -131,8 +130,9 @@ const BlogPost: React.FC = () => {
         </div>
       </div>
       
-      {/* Post Content - Remove wrapper styling, let CKEditor styles take precedence */}
+      {/* Post Content with CKEditor styling */}
       <div 
+        className="ckeditor-content"
         dangerouslySetInnerHTML={{ __html: post.body }}
       />
       

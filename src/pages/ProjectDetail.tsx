@@ -123,8 +123,9 @@ const ProjectDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Project Content - Remove any wrapper styling */}
+        {/* Project Content with CKEditor styling */}
         <div 
+          className="ckeditor-content"
           dangerouslySetInnerHTML={{ __html: project.body }}
         />
       </div>
@@ -133,3 +134,4 @@ const ProjectDetail: React.FC = () => {
 };
 
 export default ProjectDetail;
+
