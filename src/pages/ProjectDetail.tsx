@@ -1,10 +1,10 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
 import { useLanguage } from "../hooks/useLanguage";
 import { Button } from "@/components/ui/button";
-import { ExternalLink } from "lucide-react";
+import { ExternalLink, ArrowLeft } from "lucide-react";
 
 interface Technology {
   id: number;
@@ -74,6 +74,16 @@ const ProjectDetail: React.FC = () => {
   return (
     <Layout>
       <div className="container py-12">
+        {/* Back to Projects Button */}
+        <div className="mb-6">
+          <Button variant="ghost" asChild>
+            <Link to="/projects" className="flex items-center gap-2">
+              <ArrowLeft size={16} />
+              {t("projects.backToProjects")}
+            </Link>
+          </Button>
+        </div>
+
         {/* Hero Section */}
         <div className="mb-8">
           <div className="aspect-video w-full max-w-4xl mx-auto overflow-hidden rounded-lg mb-6">
@@ -114,7 +124,7 @@ const ProjectDetail: React.FC = () => {
                     className="flex items-center gap-2"
                   >
                     <ExternalLink size={16} />
-                    {t("projects.viewLiveProject")}
+                    {t("projects.viewProject")}
                   </a>
                 </Button>
               )}

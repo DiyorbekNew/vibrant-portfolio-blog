@@ -29,6 +29,7 @@ const translations = {
     "projects.viewProject": "View Project",
     "projects.viewLiveProject": "View Live Project",
     "projects.all": "All",
+    "projects.backToProjects": "Back to Projects",
     
     // Blog section
     "blog.title": "Blog",
@@ -75,6 +76,7 @@ const translations = {
     "projects.viewProject": "Loyihani Ko'rish",
     "projects.viewLiveProject": "Loyihani Ko'rish",
     "projects.all": "Barchasi",
+    "projects.backToProjects": "Loihalarga Qaytish",
     
     // Blog section
     "blog.title": "Blog",
