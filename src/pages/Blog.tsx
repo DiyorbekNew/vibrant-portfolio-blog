@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
@@ -100,7 +99,7 @@ const Blog: React.FC = () => {
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                All
+                {t("blog.all")}
               </button>
               
               {themes.map((theme) => (

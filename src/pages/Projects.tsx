@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
@@ -105,7 +104,7 @@ const Projects: React.FC = () => {
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                All
+                {t("projects.all")}
               </button>
               
               {categories.map((category) => (

@@ -1,11 +1,10 @@
-
 import React from "react";
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
 import { useLanguage } from "../hooks/useLanguage";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Github } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 
 interface Technology {
   id: number;
@@ -115,7 +114,7 @@ const ProjectDetail: React.FC = () => {
                     className="flex items-center gap-2"
                   >
                     <ExternalLink size={16} />
-                    View Live Demo
+                    {t("projects.viewLiveProject")}
                   </a>
                 </Button>
               )}
@@ -134,4 +133,3 @@ const ProjectDetail: React.FC = () => {
 };
 
 export default ProjectDetail;
-

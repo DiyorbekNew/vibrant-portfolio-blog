@@ -1,4 +1,3 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 
 // Define our translations
@@ -27,6 +26,9 @@ const translations = {
     "projects.viewAll": "View All Projects",
     "projects.search": "Search projects...",
     "projects.description": "Explore my latest work and personal projects",
+    "projects.viewProject": "View Project",
+    "projects.viewLiveProject": "View Live Project",
+    "projects.all": "All",
     
     // Blog section
     "blog.title": "Blog",
@@ -34,6 +36,11 @@ const translations = {
     "blog.viewAll": "View All Posts",
     "blog.search": "Search posts...",
     "blog.description": "Thoughts, tutorials, and insights on web development",
+    "blog.readMore": "Read More",
+    "blog.backToBlog": "Back to Blog",
+    "blog.views": "views",
+    "blog.relatedPosts": "Related Posts",
+    "blog.all": "All",
     
     // Footer
     "footer.about": "About",
@@ -65,6 +72,9 @@ const translations = {
     "projects.viewAll": "Barcha Loyihalarni Ko'rish",
     "projects.search": "Loyihalarni qidirish...",
     "projects.description": "Mening so'nggi ishlarim va shaxsiy loyihalarimni ko'ring",
+    "projects.viewProject": "Loyihani Ko'rish",
+    "projects.viewLiveProject": "Loyihani Ko'rish",
+    "projects.all": "Barchasi",
     
     // Blog section
     "blog.title": "Blog",
@@ -72,6 +82,11 @@ const translations = {
     "blog.viewAll": "Barcha Postlarni Ko'rish",
     "blog.search": "Postlarni qidirish...",
     "blog.description": "Veb-dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar",
+    "blog.readMore": "Batafsil O'qish",
+    "blog.backToBlog": "Blogga Qaytish",
+    "blog.views": "ko'rishlar",
+    "blog.relatedPosts": "Tegishli Postlar",
+    "blog.all": "Barchasi",
     
     // Footer
     "footer.about": "Haqida",

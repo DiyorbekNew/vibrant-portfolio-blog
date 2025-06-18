@@ -102,7 +102,7 @@ const BlogPost: React.FC = () => {
         <div className="container">
           <Link to="/blog" className="flex items-center text-primary hover:underline mb-6">
             <ArrowLeft size={16} className="mr-2" />
-            Back to Blog
+            {t("blog.backToBlog")}
           </Link>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">{post.title}</h1>
           
@@ -113,7 +113,7 @@ const BlogPost: React.FC = () => {
             </div>
             <div className="flex items-center gap-1">
               <Eye size={16} />
-              <span>{post.views_count} views</span>
+              <span>{post.views_count} {t("blog.views")}</span>
             </div>
           </div>
         </div>
@@ -154,7 +154,7 @@ const BlogPost: React.FC = () => {
       {relatedPosts.length > 0 && (
         <section className="section bg-secondary">
           <div className="container">
-            <h2 className="section-title">Related Posts</h2>
+            <h2 className="section-title">{t("blog.relatedPosts")}</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {relatedPosts.map((relatedPost) => (
                 <div key={relatedPost.id} className="bg-card rounded-lg overflow-hidden shadow-md">
@@ -172,7 +172,7 @@ const BlogPost: React.FC = () => {
                       to={`/blog/${relatedPost.slug}`} 
                       className="text-primary hover:underline font-medium"
                     >
-                      Read More
+                      {t("blog.readMore")}
                     </Link>
                   </div>
                 </div>
