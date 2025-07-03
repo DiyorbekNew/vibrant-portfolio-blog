@@ -15,7 +15,7 @@ interface Category {
 interface Project {
   id: number;
   technologies: Technology[];
-  category: Category;
+  category: Category[];
   title: string;
   description: string;
   body: string;
@@ -43,7 +43,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
       <div className="p-5">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-xl font-semibold">{project.title}</h3>
-          <span className="text-xs px-2 py-1 bg-secondary rounded-full">{project.category.title}</span>
+          <div className="flex flex-wrap gap-1">
+            {project.category.map((cat) => (
+              <span key={cat.id} className="text-xs px-2 py-1 bg-secondary rounded-full">
+                {cat.title}
+              </span>
+            ))}
+          </div>
         </div>
         
         <p className="text-muted-foreground mb-4 line-clamp-2">{project.description}</p>

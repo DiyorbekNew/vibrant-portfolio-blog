@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +20,7 @@ interface Category {
 interface Project {
   id: number;
   technologies: Technology[];
-  category: Category;
+  category: Category[];
   title: string;
   description: string;
   body: string;
@@ -96,9 +97,13 @@ const ProjectDetail: React.FC = () => {
           
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-wrap items-center gap-4 mb-4">
-              <span className="text-sm px-3 py-1 bg-secondary rounded-full">
-                {project.category.title}
-              </span>
+              <div className="flex flex-wrap gap-2">
+                {project.category.map((cat) => (
+                  <span key={cat.id} className="text-sm px-3 py-1 bg-secondary rounded-full">
+                    {cat.title}
+                  </span>
+                ))}
+              </div>
               <div className="flex flex-wrap gap-2">
                 {project.technologies.map((tech) => (
                   <span 
