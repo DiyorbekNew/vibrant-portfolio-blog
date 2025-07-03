@@ -37,7 +37,7 @@ interface Category {
 interface Project {
   id: number;
   technologies: Technology[];
-  category: Category;
+  category: Category[];
   title: string;
   description: string;
   body: string;
