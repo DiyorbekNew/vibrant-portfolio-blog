@@ -9,7 +9,7 @@ const PageLoader: React.FC = () => {
   const loadingText = language === 'uz' ? 'Yuklanmoqda...' : 'Loading...';
   
   return (
-    <div className="fixed inset-0 bg-background/95 backdrop-blur-md z-50 flex items-center justify-center animate-fade-in">
+    <div className="fixed inset-0 bg-background z-[9999] flex items-center justify-center animate-fade-in">
       <div className="flex flex-col items-center space-y-6">
         <div className="relative">
           {/* Outer glow ring */}
