@@ -10,12 +10,10 @@ const LanguageSwitcher: React.FC = () => {
   
   const toggleLanguage = () => {
     setIsChanging(true);
+    setLanguage(language === 'en' ? 'uz' : 'en');
     setTimeout(() => {
-      setLanguage(language === 'en' ? 'uz' : 'en');
-      setTimeout(() => {
-        setIsChanging(false);
-      }, 300);
-    }, 100);
+      setIsChanging(false);
+    }, 800);
   };
 
   return (
