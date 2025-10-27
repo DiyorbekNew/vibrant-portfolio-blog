@@ -154,7 +154,7 @@ const Index: React.FC = () => {
       <section className="section bg-gradient-to-br from-secondary/50 to-accent/20">
         <div className="container">
           <div className="flex justify-between items-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
               {t("projects.latestTitle")}
             </h2>
             <Link to="/projects" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
@@ -177,7 +177,7 @@ const Index: React.FC = () => {
       <section className="section">
         <div className="container">
           <div className="flex justify-between items-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
               {t("blog.latestTitle")}
             </h2>
             <Link to="/blog" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
