@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
 import BlogCard from "../components/BlogCard";
-import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
 interface Theme {
@@ -23,17 +22,16 @@ interface BlogPost {
 }
 
 const Blog: React.FC = () => {
-  const { language, t } = useLanguage();
   const [activeTheme, setActiveTheme] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Fetch themes
   const { data: themes = [] } = useQuery({
-    queryKey: ['themes', language],
+    queryKey: ['themes'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/blog/themes/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch themes');
@@ -43,7 +41,7 @@ const Blog: React.FC = () => {
 
   // Fetch posts
   const { data: posts = [], isLoading } = useQuery({
-    queryKey: ['posts', language, activeTheme, searchQuery],
+    queryKey: ['posts', activeTheme, searchQuery],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (activeTheme) params.append('theme', activeTheme.toString());
@@ -53,7 +51,7 @@ const Blog: React.FC = () => {
       
       const response = await fetch(url, {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
@@ -75,9 +73,9 @@ const Blog: React.FC = () => {
     <Layout>
       <section className="py-12 bg-secondary">
         <div className="container">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("blog.title")}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
           <p className="text-xl text-muted-foreground">
-            {t("blog.description")}
+            Veb-dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar
           </p>
         </div>
       </section>
@@ -86,7 +84,7 @@ const Blog: React.FC = () => {
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between gap-6 mb-10">
             <SearchBar 
-              placeholder={t("blog.search")}
+              placeholder="Postlarni qidirish..."
               onSearch={handleSearch} 
             />
             
@@ -99,7 +97,7 @@ const Blog: React.FC = () => {
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                {t("blog.all")}
+                Barchasi
               </button>
               
               {themes.map((theme) => (
@@ -120,13 +118,13 @@ const Blog: React.FC = () => {
           
           {isLoading ? (
             <div className="text-center py-16">
-              <p className="text-muted-foreground">Loading posts...</p>
+              <p className="text-muted-foreground">Yuklanmoqda...</p>
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-16">
-              <h3 className="text-xl font-medium mb-2">No posts found</h3>
+              <h3 className="text-xl font-medium mb-2">Postlar topilmadi</h3>
               <p className="text-muted-foreground">
-                Try adjusting your search or filter criteria
+                Qidiruv yoki filtr mezonlarini o'zgartirib ko'ring
               </p>
             </div>
           ) : (

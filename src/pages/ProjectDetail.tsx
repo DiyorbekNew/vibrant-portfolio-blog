@@ -1,9 +1,7 @@
-
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Layout from "../components/Layout";
-import { useLanguage } from "../hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowLeft } from "lucide-react";
 
@@ -31,14 +29,13 @@ interface Project {
 
 const ProjectDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { language, t } = useLanguage();
 
   const { data: project, isLoading, error } = useQuery({
-    queryKey: ['project', slug, language],
+    queryKey: ['project', slug],
     queryFn: async () => {
       const response = await fetch(`https://api.xazratqulov.uz/project/projects/${slug}/`, {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch project');
@@ -52,7 +49,7 @@ const ProjectDetail: React.FC = () => {
       <Layout>
         <div className="container py-16">
           <div className="text-center">
-            <p className="text-muted-foreground">Loading project...</p>
+            <p className="text-muted-foreground">Yuklanmoqda...</p>
           </div>
         </div>
       </Layout>
@@ -64,8 +61,8 @@ const ProjectDetail: React.FC = () => {
       <Layout>
         <div className="container py-16">
           <div className="text-center">
-            <h1 className="text-2xl font-bold mb-4">Project Not Found</h1>
-            <p className="text-muted-foreground">The project you're looking for doesn't exist.</p>
+            <h1 className="text-2xl font-bold mb-4">Loyiha topilmadi</h1>
+            <p className="text-muted-foreground">Siz qidirayotgan loyiha mavjud emas.</p>
           </div>
         </div>
       </Layout>
@@ -80,7 +77,7 @@ const ProjectDetail: React.FC = () => {
           <Button variant="ghost" asChild>
             <Link to="/projects" className="flex items-center gap-2">
               <ArrowLeft size={16} />
-              {t("projects.backToProjects")}
+              Loihalarga Qaytish
             </Link>
           </Button>
         </div>
@@ -98,14 +95,14 @@ const ProjectDetail: React.FC = () => {
           <div className="max-w-4xl mx-auto">
             <div className="flex flex-wrap items-center gap-4 mb-4">
               <div className="flex flex-wrap gap-2">
-                {project.category.map((cat) => (
+                {project.category.map((cat: Category) => (
                   <span key={cat.id} className="text-sm px-3 py-1 bg-secondary rounded-full">
                     {cat.title}
                   </span>
                 ))}
               </div>
               <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech) => (
+                {project.technologies.map((tech: Technology) => (
                   <span 
                     key={tech.id} 
                     className="text-xs px-2 py-1 bg-accent rounded-full text-accent-foreground"
@@ -129,7 +126,7 @@ const ProjectDetail: React.FC = () => {
                     className="flex items-center gap-2"
                   >
                     <ExternalLink size={16} />
-                    {t("projects.viewProject")}
+                    Loyihani Ko'rish
                   </a>
                 </Button>
               )}

@@ -1,9 +1,7 @@
-
 import React, { useState } from "react";
 import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
 import ProjectCard from "../components/ProjectCard";
-import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
 interface Technology {
@@ -29,17 +27,16 @@ interface Project {
 }
 
 const Projects: React.FC = () => {
-  const { language, t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Fetch categories
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories', language],
+    queryKey: ['categories'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/project/categories/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch categories');
@@ -49,7 +46,7 @@ const Projects: React.FC = () => {
 
   // Fetch projects
   const { data: projects = [], isLoading } = useQuery({
-    queryKey: ['projects', language, activeCategory, searchQuery],
+    queryKey: ['projects', activeCategory, searchQuery],
     queryFn: async () => {
       const params = new URLSearchParams();
       if (activeCategory) params.append('category', activeCategory.toString());
@@ -59,7 +56,7 @@ const Projects: React.FC = () => {
       
       const response = await fetch(url, {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch projects');
@@ -81,9 +78,9 @@ const Projects: React.FC = () => {
     <Layout>
       <section className="py-12 bg-secondary">
         <div className="container">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{t("projects.title")}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">Loyihalar</h1>
           <p className="text-xl text-muted-foreground">
-            {t("projects.description")}
+            Mening so'nggi ishlarim va shaxsiy loyihalarimni ko'ring
           </p>
         </div>
       </section>
@@ -92,7 +89,7 @@ const Projects: React.FC = () => {
         <div className="container">
           <div className="flex flex-col md:flex-row justify-between gap-6 mb-10">
             <SearchBar 
-              placeholder={t("projects.search")}
+              placeholder="Loyihalarni qidirish..."
               onSearch={handleSearch} 
             />
             
@@ -105,7 +102,7 @@ const Projects: React.FC = () => {
                     : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
                 }`}
               >
-                {t("projects.all")}
+                Barchasi
               </button>
               
               {categories.map((category) => (
@@ -126,13 +123,13 @@ const Projects: React.FC = () => {
           
           {isLoading ? (
             <div className="text-center py-16">
-              <p className="text-muted-foreground">Loading projects...</p>
+              <p className="text-muted-foreground">Yuklanmoqda...</p>
             </div>
           ) : projects.length === 0 ? (
             <div className="text-center py-16">
-              <h3 className="text-xl font-medium mb-2">No projects found</h3>
+              <h3 className="text-xl font-medium mb-2">Loyihalar topilmadi</h3>
               <p className="text-muted-foreground">
-                Try adjusting your search or filter criteria
+                Qidiruv yoki filtr mezonlarini o'zgartirib ko'ring
               </p>
             </div>
           ) : (

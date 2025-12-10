@@ -1,7 +1,5 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
-import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
 interface GeneralData {
@@ -14,15 +12,14 @@ interface GeneralData {
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-  const { t, language } = useLanguage();
   
   // Fetch general data from API
   const { data: generalData } = useQuery({
-    queryKey: ['generalData', language],
+    queryKey: ['generalData'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/general-datas/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch general data');
@@ -36,31 +33,31 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
           {/* About */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t("footer.about")}</h3>
+            <h3 className="text-lg font-semibold mb-4">Haqida</h3>
             <p className="text-muted-foreground mb-4">
-              {t("footer.description")}
+              Python backend loyihalarim, ko'nikmalarim va blog postlarimni namoyish etuvchi professional portfolio. Hamkorlik imkoniyatlari uchun bog'lanishingiz mumkin.
             </p>
           </div>
           
           {/* Quick Links */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t("footer.quickLinks")}</h3>
+            <h3 className="text-lg font-semibold mb-4">Tezkor Havolalar</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/" className="text-muted-foreground hover:text-primary">{t("nav.home")}</Link>
+                <Link to="/" className="text-muted-foreground hover:text-primary">Bosh sahifa</Link>
               </li>
               <li>
-                <Link to="/projects" className="text-muted-foreground hover:text-primary">{t("nav.projects")}</Link>
+                <Link to="/projects" className="text-muted-foreground hover:text-primary">Loyihalar</Link>
               </li>
               <li>
-                <Link to="/blog" className="text-muted-foreground hover:text-primary">{t("nav.blog")}</Link>
+                <Link to="/blog" className="text-muted-foreground hover:text-primary">Blog</Link>
               </li>
             </ul>
           </div>
           
           {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">{t("footer.contact")}</h3>
+            <h3 className="text-lg font-semibold mb-4">Bog'lanish</h3>
             <ul className="space-y-2">
               <li className="text-muted-foreground">Email: {generalData?.email || 'info@example.com'}</li>
               <li className="text-muted-foreground">Phone: {generalData?.phone || '+998 90 123 45 67'}</li>
