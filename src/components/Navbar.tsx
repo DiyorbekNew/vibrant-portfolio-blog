@@ -1,21 +1,17 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
-import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "./ThemeToggle";
-import { useLanguage } from "../hooks/useLanguage";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { t } = useLanguage();
 
   const navLinks = [
-    { name: t("nav.home"), path: "/" },
-    { name: t("nav.projects"), path: "/projects" },
-    { name: t("nav.blog"), path: "/blog" }
+    { name: "Bosh sahifa", path: "/" },
+    { name: "Loyihalar", path: "/projects" },
+    { name: "Blog", path: "/blog" }
   ];
 
   const toggleMenu = () => {
@@ -48,13 +44,11 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Controls */}
         <div className="hidden md:flex items-center gap-4">
-          <LanguageSwitcher />
           <ThemeToggle />
         </div>
 
         {/* Mobile Controls */}
         <div className="md:hidden flex items-center gap-2">
-          <LanguageSwitcher />
           <ThemeToggle />
           <button
             onClick={toggleMenu}

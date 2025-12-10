@@ -1,7 +1,5 @@
-
 import { Link } from "react-router-dom";
 import { Calendar, Eye } from "lucide-react";
-import { useLanguage } from "../hooks/useLanguage";
 
 interface Theme {
   id: number;
@@ -25,8 +23,6 @@ interface BlogCardProps {
 }
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
-  const { t } = useLanguage();
-
   return (
     <div className="bg-card rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
       <div className="aspect-video w-full overflow-hidden">
@@ -44,7 +40,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           </div>
           <div className="flex items-center gap-1">
             <Eye size={14} />
-            <span>{post.views_count} {t("blog.views")}</span>
+            <span>{post.views_count} ko'rishlar</span>
           </div>
         </div>
         
@@ -56,7 +52,7 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           to={`/blog/${post.slug}`} 
           className="text-sm font-medium text-primary hover:underline"
         >
-          {t("blog.readMore")}
+          Batafsil O'qish
         </Link>
       </div>
     </div>

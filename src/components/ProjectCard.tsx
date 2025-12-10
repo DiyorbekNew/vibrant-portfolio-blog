@@ -1,6 +1,4 @@
-
 import { Link } from "react-router-dom";
-import { useLanguage } from "../hooks/useLanguage";
 
 interface Technology {
   id: number;
@@ -29,8 +27,6 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
-  const { t } = useLanguage();
-
   return (
     <div className="bg-card rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
       <div className="aspect-video w-full overflow-hidden">
@@ -71,7 +67,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ project }) => {
             to={`/projects/${project.slug}`} 
             className="text-sm font-medium text-primary hover:underline"
           >
-            {t("projects.viewProject")}
+            Loyihani Ko'rish
           </Link>
         </div>
       </div>

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import { Calendar, Eye, ArrowLeft } from "lucide-react";
-import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
 interface Theme {
@@ -25,15 +24,14 @@ interface BlogPost {
 const BlogPost: React.FC = () => {
   const { id: slug } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { language, t } = useLanguage();
   
   // Fetch the specific post using slug
   const { data: post, isLoading, error } = useQuery({
-    queryKey: ['post', slug, language],
+    queryKey: ['post', slug],
     queryFn: async () => {
       const response = await fetch(`https://api.xazratqulov.uz/blog/post/${slug}/`, {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch post');
@@ -44,11 +42,11 @@ const BlogPost: React.FC = () => {
   
   // Fetch all posts to find related posts
   const { data: posts = [] } = useQuery({
-    queryKey: ['posts', language],
+    queryKey: ['posts'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
@@ -60,7 +58,7 @@ const BlogPost: React.FC = () => {
   const relatedPosts = post
     ? posts
         .filter(
-          (p) => p.id !== post.id && p.themes.some((theme) => post.themes.some(postTheme => postTheme.id === theme.id))
+          (p: BlogPost) => p.id !== post.id && p.themes.some((theme: Theme) => post.themes.some((postTheme: Theme) => postTheme.id === theme.id))
         )
         .slice(0, 3)
     : [];
@@ -78,7 +76,7 @@ const BlogPost: React.FC = () => {
     return (
       <Layout>
         <div className="container py-16 text-center">
-          <p className="text-muted-foreground">Loading...</p>
+          <p className="text-muted-foreground">Yuklanmoqda...</p>
         </div>
       </Layout>
     );
@@ -88,8 +86,8 @@ const BlogPost: React.FC = () => {
     return (
       <Layout>
         <div className="container py-16 text-center">
-          <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
-          <p className="text-muted-foreground">The blog post you're looking for doesn't exist.</p>
+          <h1 className="text-2xl font-bold mb-4">Post topilmadi</h1>
+          <p className="text-muted-foreground">Siz qidirayotgan blog posti mavjud emas.</p>
         </div>
       </Layout>
     );
@@ -102,7 +100,7 @@ const BlogPost: React.FC = () => {
         <div className="container">
           <Link to="/blog" className="flex items-center text-primary hover:underline mb-6">
             <ArrowLeft size={16} className="mr-2" />
-            {t("blog.backToBlog")}
+            Blogga Qaytish
           </Link>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">{post.title}</h1>
           
@@ -113,7 +111,7 @@ const BlogPost: React.FC = () => {
             </div>
             <div className="flex items-center gap-1">
               <Eye size={16} />
-              <span>{post.views_count} {t("blog.views")}</span>
+              <span>{post.views_count} ko'rishlar</span>
             </div>
           </div>
         </div>
@@ -139,7 +137,7 @@ const BlogPost: React.FC = () => {
       {/* Tags */}
       <div className="container max-w-3xl my-8">
         <div className="mt-12 flex flex-wrap gap-2">
-          {post.themes.map((theme) => (
+          {post.themes.map((theme: Theme) => (
             <span 
               key={theme.id}
               className="px-3 py-1 bg-secondary rounded-full text-sm"
@@ -154,9 +152,9 @@ const BlogPost: React.FC = () => {
       {relatedPosts.length > 0 && (
         <section className="section bg-secondary">
           <div className="container">
-            <h2 className="section-title">{t("blog.relatedPosts")}</h2>
+            <h2 className="section-title">Tegishli Postlar</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedPosts.map((relatedPost) => (
+              {relatedPosts.map((relatedPost: BlogPost) => (
                 <div key={relatedPost.id} className="bg-card rounded-lg overflow-hidden shadow-md">
                   <div className="aspect-video w-full overflow-hidden">
                     <img 
@@ -172,7 +170,7 @@ const BlogPost: React.FC = () => {
                       to={`/blog/${relatedPost.slug}`} 
                       className="text-primary hover:underline font-medium"
                     >
-                      {t("blog.readMore")}
+                      Batafsil O'qish
                     </Link>
                   </div>
                 </div>

@@ -1,10 +1,8 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
 import BlogCard from "../components/BlogCard";
-import { useLanguage } from "../hooks/useLanguage";
 import { useQuery } from "@tanstack/react-query";
 
 interface Theme {
@@ -47,15 +45,13 @@ interface Project {
 }
 
 const Index: React.FC = () => {
-  const { t, language } = useLanguage();
-
   // Fetch projects from API
   const { data: projects = [] } = useQuery({
-    queryKey: ['projects', language],
+    queryKey: ['projects'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/project/projects/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch projects');
@@ -68,11 +64,11 @@ const Index: React.FC = () => {
 
   // Fetch posts from API
   const { data: posts = [] } = useQuery({
-    queryKey: ['posts', language],
+    queryKey: ['posts'],
     queryFn: async () => {
       const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
         headers: {
-          'Accept-Language': language
+          'Accept-Language': 'uz'
         }
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
@@ -91,20 +87,20 @@ const Index: React.FC = () => {
         <div className="container relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <div className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 animate-fade-in">
-              {t("hero.greeting")}
+              👋 Salom, men Diyorbek Xazratqulov
             </div>
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent leading-tight">
-              {t("hero.title")}
+              Python Backend Dasturchi
             </h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed">
-              {t("hero.subtitle")}
+              Python orqali ishonchli va kengayadigan backend yechimlarni yarataman.
             </p>
             <div className="flex justify-center">
               <Link 
                 to="/projects" 
                 className="group relative inline-flex items-center px-8 py-4 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 hover:shadow-xl"
               >
-                <span className="relative z-10">{t("hero.viewWork")}</span>
+                <span className="relative z-10">Ishlarimni Ko'ring</span>
                 <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </Link>
             </div>
@@ -121,15 +117,15 @@ const Index: React.FC = () => {
         <div className="container">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              {t("about.title")}
+              Men Haqimda
             </h2>
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div className="space-y-6">
                 <p className="text-lg leading-relaxed text-muted-foreground">
-                  {t("about.paragraph1")}
+                  Men zamonaviy va kengayadigan server ilovalarini yaratish bo'yicha kuchli tajribaga ega ishtiyoqli Python backend dasturchisiman. Django, Flask, FastAPI va ma'lumotlar bazasini boshqarish tizimlarida tajribam bilan, zamonaviy veb-ilovalarni quvvatlaydigan samarali backend yechimlarini yarataman.
                 </p>
                 <p className="text-lg leading-relaxed text-muted-foreground">
-                  {t("about.paragraph2")}
+                  Kod yozish bilan band bo'lmaganimda, yangi texnologiyalarni o'rganish, ochiq manbali loyihalarga hissa qo'shish yoki blogim orqali bilimlarimni ulashishimni topishingiz mumkin. Men har doim yangi imkoniyatlar va hamkorliklar uchun ochiqman.
                 </p>
               </div>
               <div className="relative">
@@ -155,10 +151,10 @@ const Index: React.FC = () => {
         <div className="container">
           <div className="flex justify-between items-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
-              {t("projects.latestTitle")}
+              So'nggi Loyihalar
             </h2>
             <Link to="/projects" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
-              {t("projects.viewAll")}
+              Barcha Loyihalarni Ko'rish
               <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
             </Link>
           </div>
@@ -178,10 +174,10 @@ const Index: React.FC = () => {
         <div className="container">
           <div className="flex justify-between items-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
-              {t("blog.latestTitle")}
+              So'nggi Postlar
             </h2>
             <Link to="/blog" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
-              {t("blog.viewAll")}
+              Barcha Postlarni Ko'rish
               <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
             </Link>
           </div>
