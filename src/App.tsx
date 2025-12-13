@@ -8,6 +8,7 @@ import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import Topics from "./pages/Topics";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "./hooks/useTheme";
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/projects/:slug" element={<ProjectDetail />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogPost />} />
+            <Route path="/topics" element={<Topics />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

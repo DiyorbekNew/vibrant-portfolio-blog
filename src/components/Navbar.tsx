@@ -11,7 +11,8 @@ const Navbar: React.FC = () => {
   const navLinks = [
     { name: "Bosh sahifa", path: "/" },
     { name: "Loyihalar", path: "/projects" },
-    { name: "Blog", path: "/blog" }
+    { name: "Blog", path: "/blog" },
+    { name: "Mavzular", path: "/topics" }
   ];
 
   const toggleMenu = () => {
