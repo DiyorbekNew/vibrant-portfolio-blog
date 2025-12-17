@@ -298,13 +298,14 @@ const Topics: React.FC = () => {
 
                     <div className="flex flex-wrap gap-2">
                       {note.tags.map((tag) => (
-                        <span
+                        <button
                           key={tag}
-                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground"
+                          onClick={() => setSearchQuery(tag)}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                         >
                           <Hash className="h-3 w-3" />
                           {tag}
-                        </span>
+                        </button>
                       ))}
                     </div>
                   </article>
