@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "@/components/Layout";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -9,156 +9,39 @@ interface Topic {
   note_count: number;
 }
 
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  code?: string;
-  tags: string[];
-  topic: string;
+interface Tag {
+  id: number;
+  name: string;
 }
 
-const notes: Note[] = [
-  {
-    id: "1",
-    title: "Python list comprehension",
-    content: "Ro'yxatlarni qisqa va samarali usulda yaratish uchun list comprehension ishlatiladi.",
-    code: `# Oddiy usul
-squares = []
-for x in range(10):
-    squares.append(x**2)
+interface Note {
+  title: string;
+  description: string;
+  tags: Tag[];
+}
 
-# List comprehension
-squares = [x**2 for x in range(10)]`,
-    tags: ["python", "basics", "performance"],
-    topic: "python"
-  },
-  {
-    id: "2",
-    title: "Django ORM select_related",
-    content: "ForeignKey munosabatlarida N+1 query muammosini hal qilish uchun select_related ishlatiladi.",
-    code: `# N+1 muammo
-for book in Book.objects.all():
-    print(book.author.name)  # Har bir kitob uchun alohida query
-
-# Optimallashtirilgan
-for book in Book.objects.select_related('author'):
-    print(book.author.name)  # Bitta query`,
-    tags: ["django", "orm", "optimization"],
-    topic: "django"
-  },
-  {
-    id: "3",
-    title: "FastAPI dependency injection",
-    content: "FastAPI da dependency injection orqali qayta ishlatiladigan kod yozish mumkin.",
-    code: `from fastapi import Depends, FastAPI
-
-async def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-@app.get("/users/")
-async def get_users(db: Session = Depends(get_db)):
-    return db.query(User).all()`,
-    tags: ["fastapi", "di", "clean-code"],
-    topic: "fastapi"
-  },
-  {
-    id: "4",
-    title: "PostgreSQL JSONB query",
-    content: "JSONB ustunlaridan ma'lumotlarni qidirish va filtrlash usullari.",
-    code: `-- JSONB ichidagi qiymatni olish
-SELECT data->>'name' FROM users;
-
--- JSONB ichida qidirish
-SELECT * FROM users 
-WHERE data @> '{"role": "admin"}';
-
--- JSONB array elementlarini tekshirish
-SELECT * FROM users 
-WHERE data->'tags' ? 'python';`,
-    tags: ["postgresql", "jsonb", "query"],
-    topic: "postgresql"
-  },
-  {
-    id: "5",
-    title: "Docker multi-stage build",
-    content: "Production uchun kichik Docker image yaratish uchun multi-stage build ishlatiladi.",
-    code: `# Build stage
-FROM python:3.11 AS builder
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --user -r requirements.txt
-
-# Production stage
-FROM python:3.11-slim
-WORKDIR /app
-COPY --from=builder /root/.local /root/.local
-COPY . .
-CMD ["python", "main.py"]`,
-    tags: ["docker", "optimization", "devops"],
-    topic: "docker"
-  },
-  {
-    id: "6",
-    title: "Python async context manager",
-    content: "Asinxron resurslarni boshqarish uchun async context manager yaratish.",
-    code: `class AsyncDatabase:
-    async def __aenter__(self):
-        self.conn = await asyncpg.connect()
-        return self.conn
-    
-    async def __aexit__(self, exc_type, exc, tb):
-        await self.conn.close()
-
-# Ishlatish
-async with AsyncDatabase() as db:
-    await db.fetch("SELECT * FROM users")`,
-    tags: ["python", "async", "context-manager"],
-    topic: "python"
-  },
-  {
-    id: "7",
-    title: "Django signals",
-    content: "Model o'zgarishlarida avtomatik harakatlar bajarish uchun signals ishlatiladi.",
-    code: `from django.db.models.signals import post_save
-from django.dispatch import receiver
-
-@receiver(post_save, sender=User)
-def create_profile(sender, instance, created, **kwargs):
-    if created:
-        Profile.objects.create(user=instance)`,
-    tags: ["django", "signals", "automation"],
-    topic: "django"
-  },
-  {
-    id: "8",
-    title: "REST API pagination",
-    content: "Katta ma'lumotlar to'plamini sahifalash orqali qaytarish.",
-    code: `# Cursor-based pagination
-GET /api/users?cursor=abc123&limit=20
-
-# Response
-{
-  "data": [...],
-  "next_cursor": "def456",
-  "has_more": true
-}`,
-    tags: ["api", "pagination", "best-practices"],
-    topic: "api"
-  },
-];
+interface NotesResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: Note[];
+}
 
 const Topics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [isLoadingTopics, setIsLoadingTopics] = useState(true);
+  const [isLoadingNotes, setIsLoadingNotes] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
+  // Fetch topics
   useEffect(() => {
     const fetchTopics = async () => {
       try {
@@ -170,25 +53,100 @@ const Topics: React.FC = () => {
       } catch (error) {
         console.error("Error fetching topics:", error);
       } finally {
-        setIsLoading(false);
+        setIsLoadingTopics(false);
       }
     };
     fetchTopics();
   }, []);
 
+  // Fetch notes when topic changes
+  const fetchNotes = useCallback(async (topicId: number, pageNum: number, append: boolean = false) => {
+    if (!topicId) return;
+    
+    setIsLoadingNotes(true);
+    try {
+      const response = await fetch(
+        `https://api.xazratqulov.uz/topics/notes/${topicId}?page=${pageNum}`,
+        { headers: { "Accept-Language": "uz" } }
+      );
+      const data: NotesResponse = await response.json();
+      
+      if (append) {
+        setNotes(prev => [...prev, ...data.results]);
+      } else {
+        setNotes(data.results);
+      }
+      
+      setTotalCount(data.count);
+      setHasMore(data.next !== null);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    } finally {
+      setIsLoadingNotes(false);
+    }
+  }, []);
+
+  // Reset and fetch when topic changes
+  useEffect(() => {
+    if (selectedTopic) {
+      setNotes([]);
+      setPage(1);
+      setHasMore(false);
+      fetchNotes(selectedTopic, 1);
+    } else {
+      setNotes([]);
+      setTotalCount(0);
+      setHasMore(false);
+    }
+  }, [selectedTopic, fetchNotes]);
+
+  // Infinite scroll
+  useEffect(() => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+    }
+
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingNotes && selectedTopic) {
+          setPage(prev => prev + 1);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    if (loadMoreRef.current) {
+      observerRef.current.observe(loadMoreRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [hasMore, isLoadingNotes, selectedTopic]);
+
+  // Fetch more notes when page changes
+  useEffect(() => {
+    if (page > 1 && selectedTopic) {
+      fetchNotes(selectedTopic, page, true);
+    }
+  }, [page, selectedTopic, fetchNotes]);
+
+  // Filter notes by search and tag
   const filteredNotes = notes.filter((note) => {
-    const matchesSearch = 
+    const matchesSearch = !searchQuery || 
       note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      note.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      note.tags.some(tag => tag.name.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesTopic = !selectedTopic || note.topic === String(selectedTopic);
-    const matchesTag = !selectedTag || note.tags.includes(selectedTag);
+    const matchesTag = !selectedTag || note.tags.some(tag => tag.name === selectedTag);
     
-    return matchesSearch && matchesTopic && matchesTag;
+    return matchesSearch && matchesTag;
   });
 
   const selectedTopicData = topics.find(t => t.id === selectedTopic);
+  const totalTopicNotes = topics.reduce((sum, t) => sum + t.note_count, 0);
 
   return (
     <Layout>
@@ -247,10 +205,10 @@ const Topics: React.FC = () => {
                       Barchasi
                     </span>
                     <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                      {notes.length}
+                      {totalTopicNotes}
                     </span>
                   </button>
-                  {isLoading ? (
+                  {isLoadingTopics ? (
                     <div className="flex items-center justify-center py-4">
                       <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                     </div>
@@ -300,61 +258,72 @@ const Topics: React.FC = () => {
                   {selectedTopicData ? selectedTopicData.title.replace(/^#\s*/, "") : "Barcha eslatmalar"}
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  {filteredNotes.length} ta eslatma topildi
+                  {selectedTopic ? `${totalCount} ta eslatma` : "Mavzuni tanlang"}
                 </p>
               </div>
 
               {/* Notes Grid */}
               <div className="space-y-4">
-                {filteredNotes.map((note) => (
+                {!selectedTopic && (
+                  <div className="text-center py-12">
+                    <FileText className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
+                    <h3 className="text-lg font-medium mb-2">Mavzuni tanlang</h3>
+                    <p className="text-muted-foreground text-sm">
+                      Chap tarafdagi ro'yxatdan mavzuni tanlang
+                    </p>
+                  </div>
+                )}
+
+                {selectedTopic && isLoadingNotes && notes.length === 0 && (
+                  <div className="flex items-center justify-center py-12">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                  </div>
+                )}
+
+                {filteredNotes.map((note, index) => (
                   <article
-                    key={note.id}
+                    key={`${note.title}-${index}`}
                     className="group border rounded-xl p-5 bg-card hover:border-foreground/20 transition-all"
                   >
                     <h2 className="text-lg font-medium mb-2 group-hover:text-primary transition-colors">
                       {note.title}
                     </h2>
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {note.content}
-                    </p>
-                    
-                    {note.code && (
-                      <div className="mb-4 rounded-lg bg-muted/50 border overflow-hidden">
-                        <div className="flex items-center justify-between px-4 py-2 border-b bg-muted/50">
-                          <span className="text-xs text-muted-foreground font-mono">
-                            code
-                          </span>
-                        </div>
-                        <pre className="p-4 overflow-x-auto text-sm">
-                          <code className="text-foreground font-mono whitespace-pre">
-                            {note.code}
-                          </code>
-                        </pre>
-                      </div>
-                    )}
+                    <div 
+                      className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none"
+                      dangerouslySetInnerHTML={{ __html: note.description }}
+                    />
 
                     <div className="flex flex-wrap gap-2">
                       {note.tags.map((tag) => (
                         <button
-                          key={tag}
-                          onClick={() => setSelectedTag(tag)}
+                          key={tag.id}
+                          onClick={() => setSelectedTag(tag.name)}
                           className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                         >
                           <Hash className="h-3 w-3" />
-                          {tag}
+                          {tag.name}
                         </button>
                       ))}
                     </div>
                   </article>
                 ))}
 
-                {filteredNotes.length === 0 && (
+                {selectedTopic && filteredNotes.length === 0 && !isLoadingNotes && (
                   <div className="text-center py-12">
                     <FileText className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                     <h3 className="text-lg font-medium mb-2">Eslatma topilmadi</h3>
                     <p className="text-muted-foreground text-sm">
-                      Qidiruv so'rovingizni o'zgartirib ko'ring
+                      {searchQuery || selectedTag ? "Qidiruv so'rovingizni o'zgartirib ko'ring" : "Bu mavzuda hali eslatma yo'q"}
                     </p>
+                  </div>
+                )}
+
+                {/* Load more trigger */}
+                {hasMore && (
+                  <div ref={loadMoreRef} className="flex items-center justify-center py-4">
+                    {isLoadingNotes && (
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    )}
                   </div>
                 )}
               </div>
