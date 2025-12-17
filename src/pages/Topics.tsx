@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "@/components/Layout";
+import ReactMarkdown from "react-markdown";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -29,8 +30,9 @@ interface NotesResponse {
 
 const Topics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
-  const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [notes, setNotes] = useState<Note[]>([]);
   const [isLoadingTopics, setIsLoadingTopics] = useState(true);
@@ -40,6 +42,14 @@ const Topics: React.FC = () => {
   const [totalCount, setTotalCount] = useState(0);
   const observerRef = useRef<IntersectionObserver | null>(null);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchQuery);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
   // Fetch topics
   useEffect(() => {
@@ -59,16 +69,25 @@ const Topics: React.FC = () => {
     fetchTopics();
   }, []);
 
-  // Fetch notes when topic changes
-  const fetchNotes = useCallback(async (topicId: number, pageNum: number, append: boolean = false) => {
-    if (!topicId) return;
-    
+  // Fetch notes
+  const fetchNotes = useCallback(async (pageNum: number, append: boolean = false) => {
     setIsLoadingNotes(true);
     try {
-      const response = await fetch(
-        `https://api.xazratqulov.uz/topics/notes/${topicId}?page=${pageNum}`,
-        { headers: { "Accept-Language": "uz" } }
-      );
+      let url = selectedTopic
+        ? `https://api.xazratqulov.uz/topics/notes/${selectedTopic}?page=${pageNum}`
+        : `https://api.xazratqulov.uz/topics/notes/?page=${pageNum}`;
+      
+      // Add search and tag params for all notes endpoint
+      if (!selectedTopic) {
+        if (debouncedSearch) {
+          url += `&search=${encodeURIComponent(debouncedSearch)}`;
+        }
+        if (selectedTag) {
+          url += `&tag=${selectedTag.id}`;
+        }
+      }
+
+      const response = await fetch(url, { headers: { "Accept-Language": "uz" } });
       const data: NotesResponse = await response.json();
       
       if (append) {
@@ -84,21 +103,15 @@ const Topics: React.FC = () => {
     } finally {
       setIsLoadingNotes(false);
     }
-  }, []);
+  }, [selectedTopic, debouncedSearch, selectedTag]);
 
-  // Reset and fetch when topic changes
+  // Reset and fetch when filters change
   useEffect(() => {
-    if (selectedTopic) {
-      setNotes([]);
-      setPage(1);
-      setHasMore(false);
-      fetchNotes(selectedTopic, 1);
-    } else {
-      setNotes([]);
-      setTotalCount(0);
-      setHasMore(false);
-    }
-  }, [selectedTopic, fetchNotes]);
+    setNotes([]);
+    setPage(1);
+    setHasMore(false);
+    fetchNotes(1);
+  }, [selectedTopic, debouncedSearch, selectedTag, fetchNotes]);
 
   // Infinite scroll
   useEffect(() => {
@@ -108,7 +121,7 @@ const Topics: React.FC = () => {
 
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && hasMore && !isLoadingNotes && selectedTopic) {
+        if (entries[0].isIntersecting && hasMore && !isLoadingNotes) {
           setPage(prev => prev + 1);
         }
       },
@@ -124,26 +137,14 @@ const Topics: React.FC = () => {
         observerRef.current.disconnect();
       }
     };
-  }, [hasMore, isLoadingNotes, selectedTopic]);
+  }, [hasMore, isLoadingNotes]);
 
   // Fetch more notes when page changes
   useEffect(() => {
-    if (page > 1 && selectedTopic) {
-      fetchNotes(selectedTopic, page, true);
+    if (page > 1) {
+      fetchNotes(page, true);
     }
-  }, [page, selectedTopic, fetchNotes]);
-
-  // Filter notes by search and tag
-  const filteredNotes = notes.filter((note) => {
-    const matchesSearch = !searchQuery || 
-      note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.tags.some(tag => tag.name.toLowerCase().includes(searchQuery.toLowerCase()));
-    
-    const matchesTag = !selectedTag || note.tags.some(tag => tag.name === selectedTag);
-    
-    return matchesSearch && matchesTag;
-  });
+  }, [page]);
 
   const selectedTopicData = topics.find(t => t.id === selectedTopic);
   const totalTopicNotes = topics.reduce((sum, t) => sum + t.note_count, 0);
@@ -173,7 +174,7 @@ const Topics: React.FC = () => {
                     className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary text-primary-foreground text-xs hover:bg-primary/80 transition-colors"
                   >
                     <Hash className="h-3 w-3" />
-                    {selectedTag}
+                    {selectedTag.name}
                     <span className="ml-1">×</span>
                   </button>
                 </div>
@@ -258,29 +259,19 @@ const Topics: React.FC = () => {
                   {selectedTopicData ? selectedTopicData.title.replace(/^#\s*/, "") : "Barcha eslatmalar"}
                 </h1>
                 <p className="text-muted-foreground mt-1">
-                  {selectedTopic ? `${totalCount} ta eslatma` : "Mavzuni tanlang"}
+                  {totalCount} ta eslatma
                 </p>
               </div>
 
               {/* Notes Grid */}
               <div className="space-y-4">
-                {!selectedTopic && (
-                  <div className="text-center py-12">
-                    <FileText className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">Mavzuni tanlang</h3>
-                    <p className="text-muted-foreground text-sm">
-                      Chap tarafdagi ro'yxatdan mavzuni tanlang
-                    </p>
-                  </div>
-                )}
-
-                {selectedTopic && isLoadingNotes && notes.length === 0 && (
+                {isLoadingNotes && notes.length === 0 && (
                   <div className="flex items-center justify-center py-12">
                     <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                   </div>
                 )}
 
-                {filteredNotes.map((note, index) => (
+                {notes.map((note, index) => (
                   <article
                     key={`${note.title}-${index}`}
                     className="group border rounded-xl p-5 bg-card hover:border-foreground/20 transition-all"
@@ -288,16 +279,15 @@ const Topics: React.FC = () => {
                     <h2 className="text-lg font-medium mb-2 group-hover:text-primary transition-colors">
                       {note.title}
                     </h2>
-                    <div 
-                      className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none"
-                      dangerouslySetInnerHTML={{ __html: note.description }}
-                    />
+                    <div className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none">
+                      <ReactMarkdown>{note.description}</ReactMarkdown>
+                    </div>
 
                     <div className="flex flex-wrap gap-2">
                       {note.tags.map((tag) => (
                         <button
                           key={tag.id}
-                          onClick={() => setSelectedTag(tag.name)}
+                          onClick={() => setSelectedTag(tag)}
                           className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                         >
                           <Hash className="h-3 w-3" />
@@ -308,7 +298,7 @@ const Topics: React.FC = () => {
                   </article>
                 ))}
 
-                {selectedTopic && filteredNotes.length === 0 && !isLoadingNotes && (
+                {notes.length === 0 && !isLoadingNotes && (
                   <div className="text-center py-12">
                     <FileText className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                     <h3 className="text-lg font-medium mb-2">Eslatma topilmadi</h3>
