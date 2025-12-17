@@ -158,6 +158,7 @@ GET /api/users?cursor=abc123&limit=20
 const Topics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedTag, setSelectedTag] = useState<string | null>(null);
 
   const filteredNotes = notes.filter((note) => {
     const matchesSearch = 
@@ -166,8 +167,9 @@ const Topics: React.FC = () => {
       note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     
     const matchesTopic = !selectedTopic || note.topic === selectedTopic;
+    const matchesTag = !selectedTag || note.tags.includes(selectedTag);
     
-    return matchesSearch && matchesTopic;
+    return matchesSearch && matchesTopic && matchesTag;
   });
 
   const selectedTopicData = topics.find(t => t.id === selectedTopic);
@@ -178,7 +180,7 @@ const Topics: React.FC = () => {
         {/* Search Header */}
         <div className="border-b bg-background/95 backdrop-blur sticky top-[65px] z-40">
           <div className="container py-6">
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto space-y-3">
               <div className="relative">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <input
@@ -189,6 +191,19 @@ const Topics: React.FC = () => {
                   className="w-full h-12 pl-12 pr-4 rounded-xl border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all"
                 />
               </div>
+              {selectedTag && (
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Tag:</span>
+                  <button
+                    onClick={() => setSelectedTag(null)}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary text-primary-foreground text-xs hover:bg-primary/80 transition-colors"
+                  >
+                    <Hash className="h-3 w-3" />
+                    {selectedTag}
+                    <span className="ml-1">×</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -300,7 +315,7 @@ const Topics: React.FC = () => {
                       {note.tags.map((tag) => (
                         <button
                           key={tag}
-                          onClick={() => setSearchQuery(tag)}
+                          onClick={() => setSelectedTag(tag)}
                           className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors cursor-pointer"
                         >
                           <Hash className="h-3 w-3" />
