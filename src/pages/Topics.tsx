@@ -1,7 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "@/components/Layout";
-import { Search, Hash, ChevronRight, Code, FileText, Database, Server, Terminal, Zap } from "lucide-react";
+import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+interface Topic {
+  id: number;
+  title: string;
+  note_count: number;
+}
 
 interface Note {
   id: string;
@@ -11,15 +17,6 @@ interface Note {
   tags: string[];
   topic: string;
 }
-
-const topics = [
-  { id: "python", name: "Python", icon: Terminal, count: 4 },
-  { id: "django", name: "Django", icon: Server, count: 3 },
-  { id: "fastapi", name: "FastAPI", icon: Zap, count: 2 },
-  { id: "postgresql", name: "PostgreSQL", icon: Database, count: 3 },
-  { id: "docker", name: "Docker", icon: Code, count: 2 },
-  { id: "api", name: "REST API", icon: FileText, count: 3 },
-];
 
 const notes: Note[] = [
   {
@@ -157,8 +154,27 @@ GET /api/users?cursor=abc123&limit=20
 
 const Topics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+  const [selectedTopic, setSelectedTopic] = useState<number | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        const response = await fetch("https://api.xazratqulov.uz/topics/topics/", {
+          headers: { "Accept-Language": "uz" },
+        });
+        const data = await response.json();
+        setTopics(data);
+      } catch (error) {
+        console.error("Error fetching topics:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchTopics();
+  }, []);
 
   const filteredNotes = notes.filter((note) => {
     const matchesSearch = 
@@ -166,7 +182,7 @@ const Topics: React.FC = () => {
       note.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
       note.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    const matchesTopic = !selectedTopic || note.topic === selectedTopic;
+    const matchesTopic = !selectedTopic || note.topic === String(selectedTopic);
     const matchesTag = !selectedTag || note.tags.includes(selectedTag);
     
     return matchesSearch && matchesTopic && matchesTag;
@@ -234,29 +250,35 @@ const Topics: React.FC = () => {
                       {notes.length}
                     </span>
                   </button>
-                  {topics.map((topic) => {
-                    const Icon = topic.icon;
-                    return (
-                      <button
-                        key={topic.id}
-                        onClick={() => setSelectedTopic(topic.id)}
-                        className={cn(
-                          "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
-                          selectedTopic === topic.id 
-                            ? "bg-secondary text-foreground font-medium" 
-                            : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                        )}
-                      >
-                        <span className="flex items-center gap-2">
-                          <Icon className="h-4 w-4" />
-                          {topic.name}
-                        </span>
-                        <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
-                          {topic.count}
-                        </span>
-                      </button>
-                    );
-                  })}
+                  {isLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                    </div>
+                  ) : (
+                    topics.map((topic) => {
+                      const topicName = topic.title.replace(/^#\s*/, "");
+                      return (
+                        <button
+                          key={topic.id}
+                          onClick={() => setSelectedTopic(topic.id)}
+                          className={cn(
+                            "w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors",
+                            selectedTopic === topic.id 
+                              ? "bg-secondary text-foreground font-medium" 
+                              : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                          )}
+                        >
+                          <span className="flex items-center gap-2">
+                            <Hash className="h-4 w-4" />
+                            {topicName}
+                          </span>
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded-full">
+                            {topic.note_count}
+                          </span>
+                        </button>
+                      );
+                    })
+                  )}
                 </nav>
               </div>
             </aside>
@@ -270,12 +292,12 @@ const Topics: React.FC = () => {
                   {selectedTopicData && (
                     <>
                       <ChevronRight className="h-4 w-4" />
-                      <span className="text-foreground">{selectedTopicData.name}</span>
+                      <span className="text-foreground">{selectedTopicData.title.replace(/^#\s*/, "")}</span>
                     </>
                   )}
                 </div>
                 <h1 className="text-2xl font-semibold">
-                  {selectedTopicData ? selectedTopicData.name : "Barcha eslatmalar"}
+                  {selectedTopicData ? selectedTopicData.title.replace(/^#\s*/, "") : "Barcha eslatmalar"}
                 </h1>
                 <p className="text-muted-foreground mt-1">
                   {filteredNotes.length} ta eslatma topildi
