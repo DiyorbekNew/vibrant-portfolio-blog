@@ -279,7 +279,14 @@ const Topics: React.FC = () => {
                     <h2 className="text-lg font-medium mb-2 group-hover:text-primary transition-colors">
                       {note.title}
                     </h2>
-                    <div className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none">
+                    <div className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none
+                      prose-headings:text-foreground prose-headings:font-semibold prose-headings:mt-4 prose-headings:mb-2
+                      prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
+                      prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-foreground prose-code:font-mono prose-code:text-xs
+                      prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
+                      prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0
+                      prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
+                      prose-strong:text-foreground prose-a:text-primary">
                       <ReactMarkdown>{note.description}</ReactMarkdown>
                     </div>
 
