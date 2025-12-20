@@ -1,6 +1,10 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/Layout";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Calendar, Eye, ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -128,11 +132,70 @@ const BlogPost: React.FC = () => {
         </div>
       </div>
       
-      {/* Post Content with CKEditor styling */}
-      <div 
-        className="ckeditor-content"
-        dangerouslySetInnerHTML={{ __html: post.body }}
-      />
+      {/* Post Content with Markdown */}
+      <div className="container max-w-3xl my-8 prose prose-invert max-w-none">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            code({ node, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || '');
+              const codeString = String(children).replace(/\n$/, '');
+              
+              if (match) {
+                return (
+                  <SyntaxHighlighter
+                    style={oneDark}
+                    language={match[1]}
+                    PreTag="div"
+                    customStyle={{
+                      margin: 0,
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem',
+                    }}
+                  >
+                    {codeString}
+                  </SyntaxHighlighter>
+                );
+              }
+              
+              return (
+                <code className="bg-zinc-800 text-orange-300 px-1.5 py-0.5 rounded font-mono text-xs" {...props}>
+                  {children}
+                </code>
+              );
+            },
+            pre({ children }) {
+              return <>{children}</>;
+            },
+            h1({ children }) {
+              return <h1 className="text-2xl font-bold text-foreground mt-6 mb-3">{children}</h1>;
+            },
+            h2({ children }) {
+              return <h2 className="text-xl font-bold text-foreground mt-5 mb-2">{children}</h2>;
+            },
+            h3({ children }) {
+              return <h3 className="text-lg font-semibold text-foreground mt-4 mb-2">{children}</h3>;
+            },
+            p({ children }) {
+              return <p className="text-muted-foreground mb-4 leading-relaxed">{children}</p>;
+            },
+            ul({ children }) {
+              return <ul className="list-disc list-inside text-muted-foreground mb-4 space-y-1">{children}</ul>;
+            },
+            ol({ children }) {
+              return <ol className="list-decimal list-inside text-muted-foreground mb-4 space-y-1">{children}</ol>;
+            },
+            blockquote({ children }) {
+              return <blockquote className="border-l-4 border-primary pl-4 italic text-muted-foreground my-4">{children}</blockquote>;
+            },
+            a({ href, children }) {
+              return <a href={href} className="text-primary hover:underline" target="_blank" rel="noopener noreferrer">{children}</a>;
+            },
+          }}
+        >
+          {post.body}
+        </ReactMarkdown>
+      </div>
       
       {/* Tags */}
       <div className="container max-w-3xl my-8">
