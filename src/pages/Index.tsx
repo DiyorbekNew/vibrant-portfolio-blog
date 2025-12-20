@@ -119,28 +119,13 @@ const Index: React.FC = () => {
             <h2 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
               Men Haqimda
             </h2>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-6">
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                  Men zamonaviy va kengayadigan server ilovalarini yaratish bo'yicha kuchli tajribaga ega ishtiyoqli Python backend dasturchisiman. Django, Flask, FastAPI va ma'lumotlar bazasini boshqarish tizimlarida tajribam bilan, zamonaviy veb-ilovalarni quvvatlaydigan samarali backend yechimlarini yarataman.
-                </p>
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                  Kod yozish bilan band bo'lmaganimda, yangi texnologiyalarni o'rganish, ochiq manbali loyihalarga hissa qo'shish yoki blogim orqali bilimlarimni ulashishimni topishingiz mumkin. Men har doim yangi imkoniyatlar va hamkorliklar uchun ochiqman.
-                </p>
-              </div>
-              <div className="relative">
-                <div className="aspect-square bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl p-8 border border-border/50">
-                  <div className="h-full bg-secondary rounded-xl flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-primary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                        <span className="text-2xl">👨‍💻</span>
-                      </div>
-                      <h3 className="text-xl font-semibold">Diyorbek Xazratqulov</h3>
-                      <p className="text-muted-foreground mt-2">Backend Developer</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div className="space-y-6">
+              <p className="text-lg leading-relaxed text-muted-foreground">
+                Men zamonaviy va kengayadigan server ilovalarini yaratish bo'yicha kuchli tajribaga ega ishtiyoqli Python backend dasturchisiman. Django, Flask, FastAPI va ma'lumotlar bazasini boshqarish tizimlarida tajribam bilan, zamonaviy veb-ilovalarni quvvatlaydigan samarali backend yechimlarini yarataman.
+              </p>
+              <p className="text-lg leading-relaxed text-muted-foreground">
+                Kod yozish bilan band bo'lmaganimda, yangi texnologiyalarni o'rganish, ochiq manbali loyihalarga hissa qo'shish yoki blogim orqali bilimlarimni ulashishimni topishingiz mumkin. Men har doim yangi imkoniyatlar va hamkorliklar uchun ochiqman.
+              </p>
             </div>
           </div>
         </div>
