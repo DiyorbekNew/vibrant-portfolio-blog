@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "@/components/Layout";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -293,23 +295,33 @@ const Topics: React.FC = () => {
                         components={{
                           code({ node, className, children, ...props }) {
                             const match = /language-(\w+)/.exec(className || '');
-                            const isInline = !match && !className;
-                            return isInline ? (
+                            const codeString = String(children).replace(/\n$/, '');
+                            
+                            if (match) {
+                              return (
+                                <SyntaxHighlighter
+                                  style={oneDark}
+                                  language={match[1]}
+                                  PreTag="div"
+                                  customStyle={{
+                                    margin: 0,
+                                    borderRadius: '0.5rem',
+                                    fontSize: '0.875rem',
+                                  }}
+                                >
+                                  {codeString}
+                                </SyntaxHighlighter>
+                              );
+                            }
+                            
+                            return (
                               <code className="bg-zinc-800 text-orange-300 px-1.5 py-0.5 rounded font-mono text-xs" {...props}>
-                                {children}
-                              </code>
-                            ) : (
-                              <code className={className} {...props}>
                                 {children}
                               </code>
                             );
                           },
                           pre({ children }) {
-                            return (
-                              <pre className="bg-zinc-900 border border-zinc-700 rounded-lg p-4 overflow-x-auto my-4 text-sm">
-                                {children}
-                              </pre>
-                            );
+                            return <>{children}</>;
                           },
                           h1({ children }) {
                             return <h1 className="text-xl font-bold text-foreground mt-6 mb-3">{children}</h1>;
