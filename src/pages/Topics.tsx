@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Layout from "@/components/Layout";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -279,15 +280,50 @@ const Topics: React.FC = () => {
                     <h2 className="text-lg font-medium mb-2 group-hover:text-primary transition-colors">
                       {note.title}
                     </h2>
-                    <div className="text-muted-foreground text-sm mb-4 prose prose-sm dark:prose-invert max-w-none
+                    <div className="text-sm mb-4 prose prose-sm dark:prose-invert max-w-none
                       prose-headings:text-foreground prose-headings:font-semibold prose-headings:mt-4 prose-headings:mb-2
                       prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
-                      prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-foreground prose-code:font-mono prose-code:text-xs
-                      prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto
-                      prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0
-                      prose-p:my-2 prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
+                      prose-code:bg-zinc-800 prose-code:text-orange-300 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:font-mono prose-code:text-xs
+                      prose-pre:bg-zinc-900 prose-pre:border prose-pre:border-zinc-700 prose-pre:rounded-lg prose-pre:p-4 prose-pre:overflow-x-auto prose-pre:my-4
+                      prose-pre:prose-code:bg-transparent prose-pre:prose-code:p-0 prose-pre:prose-code:text-zinc-300
+                      prose-p:my-2 prose-p:text-muted-foreground prose-ul:my-2 prose-ol:my-2 prose-li:my-0.5
                       prose-strong:text-foreground prose-a:text-primary">
-                      <ReactMarkdown>{note.description}</ReactMarkdown>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          code({ node, className, children, ...props }) {
+                            const match = /language-(\w+)/.exec(className || '');
+                            const isInline = !match && !className;
+                            return isInline ? (
+                              <code className="bg-zinc-800 text-orange-300 px-1.5 py-0.5 rounded font-mono text-xs" {...props}>
+                                {children}
+                              </code>
+                            ) : (
+                              <code className={className} {...props}>
+                                {children}
+                              </code>
+                            );
+                          },
+                          pre({ children }) {
+                            return (
+                              <pre className="bg-zinc-900 border border-zinc-700 rounded-lg p-4 overflow-x-auto my-4 text-sm">
+                                {children}
+                              </pre>
+                            );
+                          },
+                          h1({ children }) {
+                            return <h1 className="text-xl font-bold text-foreground mt-6 mb-3">{children}</h1>;
+                          },
+                          h2({ children }) {
+                            return <h2 className="text-lg font-semibold text-foreground mt-5 mb-2">{children}</h2>;
+                          },
+                          h3({ children }) {
+                            return <h3 className="text-base font-semibold text-foreground mt-4 mb-2">{children}</h3>;
+                          },
+                        }}
+                      >
+                        {note.description}
+                      </ReactMarkdown>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
