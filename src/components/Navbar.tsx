@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Menu, X } from "lucide-react";
-import ThemeToggle from "./ThemeToggle";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -45,12 +44,10 @@ const Navbar: React.FC = () => {
 
         {/* Desktop Controls */}
         <div className="hidden md:flex items-center gap-4">
-          <ThemeToggle />
         </div>
 
         {/* Mobile Controls */}
         <div className="md:hidden flex items-center gap-2">
-          <ThemeToggle />
           <button
             onClick={toggleMenu}
             className="text-primary ml-2"
