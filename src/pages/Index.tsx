@@ -203,11 +203,11 @@ const Index: React.FC = () => {
       {/* Topics Section */}
       <section className="section bg-gradient-to-br from-secondary/50 to-accent/20">
         <div className="container">
-          <div className="flex justify-between items-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
               Mavzular
             </h2>
-            <Link to="/topics" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
+            <Link to="/topics" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-sm sm:text-lg transition-all duration-300">
               Barcha Mavzularni Ko'rish
               <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
             </Link>
