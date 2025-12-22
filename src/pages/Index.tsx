@@ -10,6 +10,12 @@ interface Theme {
   title: string;
 }
 
+interface Topic {
+  id: number;
+  title: string;
+  note_count: number;
+}
+
 interface BlogPost {
   id: number;
   themes: Theme[];
@@ -78,6 +84,23 @@ const Index: React.FC = () => {
 
   // Get featured posts (first 3 posts for now)
   const featuredPosts = posts.slice(0, 3);
+
+  // Fetch topics from API
+  const { data: topics = [] } = useQuery({
+    queryKey: ['topics'],
+    queryFn: async () => {
+      const response = await fetch('https://api.xazratqulov.uz/topics/topics/', {
+        headers: {
+          'Accept-Language': 'uz'
+        }
+      });
+      if (!response.ok) throw new Error('Failed to fetch topics');
+      return response.json() as Promise<Topic[]>;
+    }
+  });
+
+  // Get featured topics (first 6 topics)
+  const featuredTopics = topics.slice(0, 6);
 
   return (
     <Layout>
@@ -172,6 +195,44 @@ const Index: React.FC = () => {
               <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                 <BlogCard post={post} />
               </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Topics Section */}
+      <section className="section bg-gradient-to-br from-secondary/50 to-accent/20">
+        <div className="container">
+          <div className="flex justify-between items-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent pb-1">
+              Mavzular
+            </h2>
+            <Link to="/topics" className="group inline-flex items-center text-primary hover:text-primary/80 font-semibold text-lg transition-all duration-300">
+              Barcha Mavzularni Ko'rish
+              <span className="ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
+            </Link>
+          </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            {featuredTopics.map((topic, index) => (
+              <Link
+                key={topic.id}
+                to={`/topics?topic=${topic.id}`}
+                className="group relative p-6 rounded-xl border border-border/50 bg-card hover:border-primary/50 hover:shadow-lg transition-all duration-300 animate-fade-in"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="text-center">
+                  <div className="w-12 h-12 mx-auto mb-3 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <span className="text-2xl">#</span>
+                  </div>
+                  <h3 className="font-semibold text-sm group-hover:text-primary transition-colors line-clamp-2">
+                    {topic.title.replace(/^#\s*/, "")}
+                  </h3>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    {topic.note_count} ta eslatma
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         </div>

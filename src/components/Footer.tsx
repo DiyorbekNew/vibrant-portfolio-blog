@@ -52,6 +52,9 @@ const Footer: React.FC = () => {
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary">Blog</Link>
               </li>
+              <li>
+                <Link to="/topics" className="text-muted-foreground hover:text-primary">Mavzular</Link>
+              </li>
             </ul>
           </div>
           
