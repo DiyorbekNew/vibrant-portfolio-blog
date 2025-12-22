@@ -26,6 +26,7 @@ interface BlogPost {
   slug: string;
   views_count: number;
   likes_count: number;
+  have_like: boolean;
 }
 
 const BlogPost: React.FC = () => {
@@ -249,11 +250,15 @@ const BlogPost: React.FC = () => {
           <button
             onClick={handleLike}
             disabled={isLiking}
-            className="group flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 border border-border rounded-lg text-foreground font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`group flex items-center gap-2 px-4 py-2 border rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+              post.have_like 
+                ? 'bg-primary/10 border-primary/30 text-primary' 
+                : 'bg-secondary hover:bg-secondary/80 border-border text-foreground'
+            }`}
           >
             <Heart 
               size={18} 
-              className={`transition-all duration-200 group-hover:text-primary ${isLiking ? 'animate-pulse' : ''}`}
+              className={`transition-all duration-200 ${post.have_like ? 'text-primary fill-primary' : 'group-hover:text-primary'} ${isLiking ? 'animate-pulse' : ''}`}
             />
             <span className="text-sm">
               {isLiking ? '...' : post.likes_count}
