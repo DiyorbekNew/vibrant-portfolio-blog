@@ -26,6 +26,7 @@ interface BlogPost {
   created_at: string;
   slug: string;
   views_count: number;
+  likes_count: number;
 }
 
 interface Technology {

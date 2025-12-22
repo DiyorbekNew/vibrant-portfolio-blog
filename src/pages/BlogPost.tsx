@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Calendar, Eye, ArrowLeft } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Calendar, Eye, ArrowLeft, Heart } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { getApiHeaders, API_BASE_URL, togglePostLike } from "@/lib/api";
+import { toast } from "@/hooks/use-toast";
 
 interface Theme {
   id: number;
@@ -23,20 +25,21 @@ interface BlogPost {
   created_at: string;
   slug: string;
   views_count: number;
+  likes_count: number;
 }
 
 const BlogPost: React.FC = () => {
   const { id: slug } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [isLiking, setIsLiking] = useState(false);
   
   // Fetch the specific post using slug
   const { data: post, isLoading, error } = useQuery({
     queryKey: ['post', slug],
     queryFn: async () => {
-      const response = await fetch(`https://api.xazratqulov.uz/blog/post/${slug}/`, {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const response = await fetch(`${API_BASE_URL}/blog/post/${slug}/`, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch post');
       return response.json();
@@ -48,10 +51,8 @@ const BlogPost: React.FC = () => {
   const { data: posts = [] } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const response = await fetch(`${API_BASE_URL}/blog/post/`, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
       return response.json();
@@ -66,6 +67,30 @@ const BlogPost: React.FC = () => {
         )
         .slice(0, 3)
     : [];
+
+  const handleLike = async () => {
+    if (!slug || isLiking) return;
+    
+    setIsLiking(true);
+    try {
+      await togglePostLike(slug);
+      // Invalidate queries to refresh like count
+      queryClient.invalidateQueries({ queryKey: ['post', slug] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
+      toast({
+        title: "Muvaffaqiyatli!",
+        description: "Like holati o'zgartirildi",
+      });
+    } catch (error) {
+      toast({
+        title: "Xatolik",
+        description: "Like qo'shishda xatolik yuz berdi",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLiking(false);
+    }
+  };
 
   useEffect(() => {
     if (error) {
@@ -116,6 +141,10 @@ const BlogPost: React.FC = () => {
             <div className="flex items-center gap-1">
               <Eye size={16} />
               <span>{post.views_count} ko'rishlar</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Heart size={16} className="text-red-500" />
+              <span>{post.likes_count} yoqtirishlar</span>
             </div>
           </div>
         </div>
@@ -208,6 +237,26 @@ const BlogPost: React.FC = () => {
               {theme.title}
             </span>
           ))}
+        </div>
+      </div>
+      
+      {/* Like Button Section */}
+      <div className="container max-w-3xl my-8">
+        <div className="flex items-center justify-center gap-4 py-8 border-t border-b border-border">
+          <button
+            onClick={handleLike}
+            disabled={isLiking}
+            className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+          >
+            <Heart 
+              size={24} 
+              className={`transition-transform duration-300 group-hover:scale-110 ${isLiking ? 'animate-pulse' : ''}`}
+              fill="currentColor"
+            />
+            <span className="text-lg">
+              {isLiking ? 'Yuklanmoqda...' : `Yoqdi (${post.likes_count})`}
+            </span>
+          </button>
         </div>
       </div>
       
