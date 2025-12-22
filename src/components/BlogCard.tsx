@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Calendar, Eye } from "lucide-react";
+import { Calendar, Eye, Heart } from "lucide-react";
 
 interface Theme {
   id: number;
@@ -16,6 +16,7 @@ interface BlogPost {
   created_at: string;
   slug: string;
   views_count: number;
+  likes_count: number;
 }
 
 interface BlogCardProps {
@@ -40,7 +41,11 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           </div>
           <div className="flex items-center gap-1">
             <Eye size={14} />
-            <span>{post.views_count} ko'rishlar</span>
+            <span>{post.views_count}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <Heart size={14} className="text-red-500" />
+            <span>{post.likes_count}</span>
           </div>
         </div>
         

@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
+import { getApiHeaders, API_BASE_URL } from "@/lib/api";
 
 interface Theme {
   id: number;
@@ -19,6 +20,7 @@ interface BlogPost {
   created_at: string;
   slug: string;
   views_count: number;
+  likes_count: number;
 }
 
 const Blog: React.FC = () => {
@@ -29,10 +31,8 @@ const Blog: React.FC = () => {
   const { data: themes = [] } = useQuery({
     queryKey: ['themes'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/blog/themes/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const response = await fetch(`${API_BASE_URL}/blog/themes/`, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch themes');
       return response.json() as Promise<Theme[]>;
@@ -47,12 +47,10 @@ const Blog: React.FC = () => {
       if (activeTheme) params.append('theme', activeTheme.toString());
       if (searchQuery) params.append('search', searchQuery);
       
-      const url = `https://api.xazratqulov.uz/blog/post/${params.toString() ? '?' + params.toString() : ''}`;
+      const url = `${API_BASE_URL}/blog/post/${params.toString() ? '?' + params.toString() : ''}`;
       
       const response = await fetch(url, {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
       return response.json() as Promise<BlogPost[]>;
