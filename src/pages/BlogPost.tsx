@@ -242,19 +242,21 @@ const BlogPost: React.FC = () => {
       
       {/* Like Button Section */}
       <div className="container max-w-3xl my-8">
-        <div className="flex items-center justify-center gap-4 py-8 border-t border-b border-border">
+        <div className="flex items-center justify-between py-6 border-t border-border">
+          <span className="text-muted-foreground text-sm">
+            Ushbu post foydali bo'ldimi?
+          </span>
           <button
             onClick={handleLike}
             disabled={isLiking}
-            className="group flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white rounded-full font-semibold transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            className="group flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 border border-border rounded-lg text-foreground font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Heart 
-              size={24} 
-              className={`transition-transform duration-300 group-hover:scale-110 ${isLiking ? 'animate-pulse' : ''}`}
-              fill="currentColor"
+              size={18} 
+              className={`transition-all duration-200 group-hover:text-primary ${isLiking ? 'animate-pulse' : ''}`}
             />
-            <span className="text-lg">
-              {isLiking ? 'Yuklanmoqda...' : `Yoqdi (${post.likes_count})`}
+            <span className="text-sm">
+              {isLiking ? '...' : post.likes_count}
             </span>
           </button>
         </div>
