@@ -5,10 +5,10 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { Calendar, Eye, ArrowLeft, Heart } from "lucide-react";
+import { Calendar, Eye, ArrowLeft, Heart, Share2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getApiHeaders, API_BASE_URL, togglePostLike, appendIpParam } from "@/lib/api";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 interface Theme {
   id: number;
@@ -80,18 +80,32 @@ const BlogPost: React.FC = () => {
       // Invalidate queries to refresh like count
       queryClient.invalidateQueries({ queryKey: ['post', slug] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
-      toast({
-        title: "Muvaffaqiyatli!",
-        description: "Like holati o'zgartirildi",
-      });
+      toast.success("Like holati o'zgartirildi");
     } catch (error) {
-      toast({
-        title: "Xatolik",
-        description: "Like qo'shishda xatolik yuz berdi",
-        variant: "destructive",
-      });
+      toast.error("Like qo'shishda xatolik yuz berdi");
     } finally {
       setIsLiking(false);
+    }
+  };
+
+  const handleShare = async () => {
+    const shareUrl = window.location.href;
+    const shareData = {
+      title: post?.title || 'Blog Post',
+      text: post?.description || '',
+      url: shareUrl,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        // User cancelled sharing
+      }
+    } else {
+      // Fallback: copy to clipboard
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Havola nusxalandi!");
     }
   };
 
@@ -249,23 +263,32 @@ const BlogPost: React.FC = () => {
           <span className="text-muted-foreground text-sm">
             Ushbu post foydali bo'ldimi?
           </span>
-          <button
-            onClick={handleLike}
-            disabled={isLiking}
-            className={`group flex items-center gap-2 px-4 py-2 border rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
-              post.have_like 
-                ? 'bg-primary/10 border-primary/30 text-primary' 
-                : 'bg-secondary hover:bg-secondary/80 border-border text-foreground'
-            }`}
-          >
-            <Heart 
-              size={18} 
-              className={`transition-all duration-200 ${post.have_like ? 'text-primary fill-primary' : 'group-hover:text-primary'} ${isLiking ? 'animate-pulse' : ''}`}
-            />
-            <span className="text-sm">
-              {isLiking ? '...' : post.likes_count}
-            </span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={handleLike}
+              disabled={isLiking}
+              className={`group flex items-center gap-2 px-4 py-2 border rounded-lg font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ${
+                post.have_like 
+                  ? 'bg-primary/10 border-primary/30 text-primary' 
+                  : 'bg-secondary hover:bg-secondary/80 border-border text-foreground'
+              }`}
+            >
+              <Heart 
+                size={18} 
+                className={`transition-all duration-200 ${post.have_like ? 'text-primary fill-primary' : 'group-hover:text-primary'} ${isLiking ? 'animate-pulse' : ''}`}
+              />
+              <span className="text-sm">
+                {isLiking ? '...' : post.likes_count}
+              </span>
+            </button>
+            <button
+              onClick={handleShare}
+              className="group flex items-center gap-2 px-4 py-2 bg-secondary hover:bg-secondary/80 border border-border text-foreground rounded-lg font-medium transition-all duration-200"
+            >
+              <Share2 size={18} className="transition-all duration-200 group-hover:text-primary" />
+              <span className="text-sm">Ulashish</span>
+            </button>
+          </div>
         </div>
       </div>
       
