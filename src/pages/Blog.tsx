@@ -3,7 +3,7 @@ import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
-import { getApiHeaders, API_BASE_URL } from "@/lib/api";
+import { getApiHeaders, API_BASE_URL, appendIpParam } from "@/lib/api";
 
 interface Theme {
   id: number;
@@ -31,7 +31,8 @@ const Blog: React.FC = () => {
   const { data: themes = [] } = useQuery({
     queryKey: ['themes'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/blog/themes/`, {
+      const url = appendIpParam(`${API_BASE_URL}/blog/themes/`);
+      const response = await fetch(url, {
         headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch themes');
@@ -47,7 +48,8 @@ const Blog: React.FC = () => {
       if (activeTheme) params.append('theme', activeTheme.toString());
       if (searchQuery) params.append('search', searchQuery);
       
-      const url = `${API_BASE_URL}/blog/post/${params.toString() ? '?' + params.toString() : ''}`;
+      let url = `${API_BASE_URL}/blog/post/${params.toString() ? '?' + params.toString() : ''}`;
+      url = appendIpParam(url);
       
       const response = await fetch(url, {
         headers: getApiHeaders()

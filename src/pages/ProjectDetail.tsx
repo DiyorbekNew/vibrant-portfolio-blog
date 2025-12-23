@@ -1,6 +1,7 @@
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { appendIpParam, getApiHeaders } from "@/lib/api";
 import Layout from "../components/Layout";
 import { Button } from "@/components/ui/button";
 import { ExternalLink, ArrowLeft } from "lucide-react";
@@ -33,10 +34,9 @@ const ProjectDetail: React.FC = () => {
   const { data: project, isLoading, error } = useQuery({
     queryKey: ['project', slug],
     queryFn: async () => {
-      const response = await fetch(`https://api.xazratqulov.uz/project/projects/${slug}/`, {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam(`https://api.xazratqulov.uz/project/projects/${slug}/`);
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch project');
       return response.json();

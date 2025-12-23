@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import ProjectCard from "../components/ProjectCard";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
+import { appendIpParam, getApiHeaders } from "@/lib/api";
 
 interface Theme {
   id: number;
@@ -56,10 +57,9 @@ const Index: React.FC = () => {
   const { data: projects = [] } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/project/projects/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam('https://api.xazratqulov.uz/project/projects/');
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch projects');
       return response.json() as Promise<Project[]>;
@@ -73,10 +73,9 @@ const Index: React.FC = () => {
   const { data: posts = [] } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/blog/post/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam('https://api.xazratqulov.uz/blog/post/');
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
       return response.json() as Promise<BlogPost[]>;
@@ -90,10 +89,9 @@ const Index: React.FC = () => {
   const { data: topics = [] } = useQuery({
     queryKey: ['topics'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/topics/topics/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam('https://api.xazratqulov.uz/topics/topics/');
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch topics');
       return response.json() as Promise<Topic[]>;

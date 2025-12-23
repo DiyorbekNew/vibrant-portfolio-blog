@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { appendIpParam, getApiHeaders } from "@/lib/api";
 
 interface GeneralData {
   id: number;
@@ -17,10 +18,9 @@ const Footer: React.FC = () => {
   const { data: generalData } = useQuery({
     queryKey: ['generalData'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/general-datas/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam('https://api.xazratqulov.uz/general-datas/');
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch general data');
       return response.json() as Promise<GeneralData>;

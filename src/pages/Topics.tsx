@@ -6,6 +6,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { appendIpParam, getApiHeaders } from "@/lib/api";
 
 interface Topic {
   id: number;
@@ -58,8 +59,9 @@ const Topics: React.FC = () => {
   useEffect(() => {
     const fetchTopics = async () => {
       try {
-        const response = await fetch("https://api.xazratqulov.uz/topics/topics/", {
-          headers: { "Accept-Language": "uz" },
+        const url = appendIpParam("https://api.xazratqulov.uz/topics/topics/");
+        const response = await fetch(url, {
+          headers: getApiHeaders(),
         });
         const data = await response.json();
         setTopics(data);
@@ -90,7 +92,8 @@ const Topics: React.FC = () => {
         }
       }
 
-      const response = await fetch(url, { headers: { "Accept-Language": "uz" } });
+      url = appendIpParam(url);
+      const response = await fetch(url, { headers: getApiHeaders() });
       const data: NotesResponse = await response.json();
       
       if (append) {

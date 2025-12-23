@@ -20,15 +20,20 @@ export const getClientIp = (): string => {
 export const getApiHeaders = (): HeadersInit => {
   return {
     'Accept-Language': 'uz',
-    'ip_address': getClientIp(),
   };
+};
+
+export const appendIpParam = (url: string): string => {
+  const separator = url.includes('?') ? '&' : '?';
+  return `${url}${separator}ip_address=${getClientIp()}`;
 };
 
 export const API_BASE_URL = 'https://api.xazratqulov.uz';
 
 // Like/unlike a post
 export const togglePostLike = async (postSlug: string): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/blog/like/`, {
+  const url = appendIpParam(`${API_BASE_URL}/blog/like/`);
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       ...getApiHeaders(),
