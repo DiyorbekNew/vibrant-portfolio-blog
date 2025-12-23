@@ -3,6 +3,7 @@ import Layout from "../components/Layout";
 import SearchBar from "../components/SearchBar";
 import ProjectCard from "../components/ProjectCard";
 import { useQuery } from "@tanstack/react-query";
+import { appendIpParam, getApiHeaders } from "@/lib/api";
 
 interface Technology {
   id: number;
@@ -34,10 +35,9 @@ const Projects: React.FC = () => {
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
-      const response = await fetch('https://api.xazratqulov.uz/project/categories/', {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+      const url = appendIpParam('https://api.xazratqulov.uz/project/categories/');
+      const response = await fetch(url, {
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch categories');
       return response.json() as Promise<Category[]>;
@@ -52,12 +52,11 @@ const Projects: React.FC = () => {
       if (activeCategory) params.append('category', activeCategory.toString());
       if (searchQuery) params.append('search', searchQuery);
       
-      const url = `https://api.xazratqulov.uz/project/projects/${params.toString() ? '?' + params.toString() : ''}`;
+      let url = `https://api.xazratqulov.uz/project/projects/${params.toString() ? '?' + params.toString() : ''}`;
+      url = appendIpParam(url);
       
       const response = await fetch(url, {
-        headers: {
-          'Accept-Language': 'uz'
-        }
+        headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch projects');
       return response.json() as Promise<Project[]>;

@@ -7,7 +7,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Calendar, Eye, ArrowLeft, Heart } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { getApiHeaders, API_BASE_URL, togglePostLike } from "@/lib/api";
+import { getApiHeaders, API_BASE_URL, togglePostLike, appendIpParam } from "@/lib/api";
 import { toast } from "@/hooks/use-toast";
 
 interface Theme {
@@ -39,7 +39,8 @@ const BlogPost: React.FC = () => {
   const { data: post, isLoading, error } = useQuery({
     queryKey: ['post', slug],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/blog/post/${slug}/`, {
+      const url = appendIpParam(`${API_BASE_URL}/blog/post/${slug}/`);
+      const response = await fetch(url, {
         headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch post');
@@ -52,7 +53,8 @@ const BlogPost: React.FC = () => {
   const { data: posts = [] } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
-      const response = await fetch(`${API_BASE_URL}/blog/post/`, {
+      const url = appendIpParam(`${API_BASE_URL}/blog/post/`);
+      const response = await fetch(url, {
         headers: getApiHeaders()
       });
       if (!response.ok) throw new Error('Failed to fetch posts');
