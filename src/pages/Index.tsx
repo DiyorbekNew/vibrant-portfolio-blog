@@ -5,56 +5,13 @@ import ProjectCard from "../components/ProjectCard";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
 import { appendIpParam, getApiHeaders } from "@/lib/api";
-
-interface Theme {
-  id: number;
-  title: string;
-}
-
-interface Topic {
-  id: number;
-  title: string;
-  note_count: number;
-}
-
-interface BlogPost {
-  id: number;
-  themes: Theme[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  created_at: string;
-  slug: string;
-  views_count: number;
-  likes_count: number;
-}
-
-interface Technology {
-  id: number;
-  technology: string;
-}
-
-interface Category {
-  id: number;
-  title: string;
-}
-
-interface Project {
-  id: number;
-  technologies: Technology[];
-  category: Category[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  demo_url?: string;
-  slug: string;
-}
+import type { Project, BlogPost, Topic } from "@/types";
+import { ProjectCardSkeleton, BlogCardSkeleton } from "@/components/LoadingSkeleton";
+import SEO from "@/components/SEO";
 
 const Index: React.FC = () => {
   // Fetch projects from API
-  const { data: projects = [] } = useQuery({
+  const { data: projects = [], isLoading: isLoadingProjects } = useQuery({
     queryKey: ['projects'],
     queryFn: async () => {
       const url = appendIpParam('https://api.xazratqulov.uz/project/projects/');
@@ -70,7 +27,7 @@ const Index: React.FC = () => {
   const featuredProjects = projects.slice(0, 3);
 
   // Fetch posts from API
-  const { data: posts = [] } = useQuery({
+  const { data: posts = [], isLoading: isLoadingPosts } = useQuery({
     queryKey: ['posts'],
     queryFn: async () => {
       const url = appendIpParam('https://api.xazratqulov.uz/blog/post/');
@@ -103,6 +60,10 @@ const Index: React.FC = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Bosh sahifa"
+        description="Python backend dasturchi. Django, Flask, FastAPI orqali zamonaviy backend yechimlar yarataman."
+      />
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/5 via-secondary to-accent/10 overflow-hidden">
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
@@ -167,11 +128,19 @@ const Index: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredProjects.map((project, index) => (
-              <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <ProjectCard project={project} />
-              </div>
-            ))}
+            {isLoadingProjects ? (
+              <>
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+                <ProjectCardSkeleton />
+              </>
+            ) : (
+              featuredProjects.map((project, index) => (
+                <div key={project.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <ProjectCard project={project} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -190,11 +159,19 @@ const Index: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {featuredPosts.map((post, index) => (
-              <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <BlogCard post={post} />
-              </div>
-            ))}
+            {isLoadingPosts ? (
+              <>
+                <BlogCardSkeleton />
+                <BlogCardSkeleton />
+                <BlogCardSkeleton />
+              </>
+            ) : (
+              featuredPosts.map((post, index) => (
+                <div key={post.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <BlogCard post={post} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>

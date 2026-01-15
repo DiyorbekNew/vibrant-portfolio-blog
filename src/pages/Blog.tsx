@@ -4,24 +4,9 @@ import SearchBar from "../components/SearchBar";
 import BlogCard from "../components/BlogCard";
 import { useQuery } from "@tanstack/react-query";
 import { getApiHeaders, API_BASE_URL, appendIpParam } from "@/lib/api";
-
-interface Theme {
-  id: number;
-  title: string;
-}
-
-interface BlogPost {
-  id: number;
-  themes: Theme[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  created_at: string;
-  slug: string;
-  views_count: number;
-  likes_count: number;
-}
+import type { BlogPost, Theme } from "@/types";
+import { BlogCardSkeleton } from "@/components/LoadingSkeleton";
+import SEO from "@/components/SEO";
 
 const Blog: React.FC = () => {
   const [activeTheme, setActiveTheme] = useState<number | null>(null);
@@ -71,6 +56,11 @@ const Blog: React.FC = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Blog"
+        description="Veb-dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar. Python backend, Django, Flask va boshqa texnologiyalar haqida postlar."
+        url="/blog"
+      />
       <section className="py-12 bg-secondary">
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
@@ -117,8 +107,10 @@ const Blog: React.FC = () => {
           </div>
           
           {isLoading ? (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground">Yuklanmoqda...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <BlogCardSkeleton />
+              <BlogCardSkeleton />
+              <BlogCardSkeleton />
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-16">

@@ -15,18 +15,26 @@ const SearchBar: React.FC<SearchBarProps> = ({ placeholder, onSearch }) => {
     onSearch(searchQuery);
   };
 
+  const inputId = `search-input-${placeholder.replace(/\s+/g, '-').toLowerCase()}`;
+  
   return (
-    <form onSubmit={handleSubmit} className="relative w-full max-w-md">
+    <form onSubmit={handleSubmit} className="relative w-full max-w-md" role="search">
+      <label htmlFor={inputId} className="sr-only">
+        {placeholder}
+      </label>
       <input
-        type="text"
+        id={inputId}
+        type="search"
         placeholder={placeholder}
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full p-3 pl-10 rounded-lg border border-input bg-background"
+        className="w-full p-3 pl-10 rounded-lg border border-input bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+        aria-label={placeholder}
       />
       <Search 
         size={18} 
-        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"
+        className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground pointer-events-none"
+        aria-hidden="true"
       />
     </form>
   );

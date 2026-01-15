@@ -1,5 +1,4 @@
-
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
 type Theme = 'light' | 'dark' | 'system';
 
@@ -18,18 +17,60 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({
   children,
+  defaultTheme = 'system',
+  storageKey = 'portfolio-theme',
 }: ThemeProviderProps) {
-  const [theme] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(storageKey) as Theme | null;
+      if (stored && ['light', 'dark', 'system'].includes(stored)) {
+        return stored;
+      }
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    root.classList.remove('light');
-    root.classList.add('dark');
-  }, []);
+    root.classList.remove('light', 'dark');
+
+    let effectiveTheme: 'light' | 'dark' = 'dark';
+    
+    if (theme === 'system') {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      effectiveTheme = systemTheme;
+    } else {
+      effectiveTheme = theme;
+    }
+
+    root.classList.add(effectiveTheme);
+  }, [theme]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = () => {
+      if (theme === 'system') {
+        const root = window.document.documentElement;
+        root.classList.remove('light', 'dark');
+        const effectiveTheme = mediaQuery.matches ? 'dark' : 'light';
+        root.classList.add(effectiveTheme);
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
+  }, [theme]);
+
+  const setTheme = (newTheme: Theme) => {
+    setThemeState(newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(storageKey, newTheme);
+    }
+  };
 
   const value = {
     theme,
-    setTheme: () => {},
+    setTheme,
   };
 
   return (

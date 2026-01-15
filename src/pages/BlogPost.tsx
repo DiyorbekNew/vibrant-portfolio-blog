@@ -9,25 +9,9 @@ import { Calendar, Eye, ArrowLeft, Heart, Share2 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getApiHeaders, API_BASE_URL, togglePostLike, appendIpParam } from "@/lib/api";
 import { toast } from "sonner";
-
-interface Theme {
-  id: number;
-  title: string;
-}
-
-interface BlogPost {
-  id: number;
-  themes: Theme[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  created_at: string;
-  slug: string;
-  views_count: number;
-  likes_count: number;
-  have_like: boolean;
-}
+import type { BlogPost, Theme } from "@/types";
+import { PageSkeleton } from "@/components/LoadingSkeleton";
+import SEO from "@/components/SEO";
 
 const BlogPost: React.FC = () => {
   const { id: slug } = useParams<{ id: string }>();
@@ -121,9 +105,7 @@ const BlogPost: React.FC = () => {
   if (isLoading) {
     return (
       <Layout>
-        <div className="container py-16 text-center">
-          <p className="text-muted-foreground">Yuklanmoqda...</p>
-        </div>
+        <PageSkeleton />
       </Layout>
     );
   }
@@ -141,6 +123,13 @@ const BlogPost: React.FC = () => {
 
   return (
     <Layout>
+      <SEO
+        title={post.title}
+        description={post.description}
+        image={post.image_url}
+        url={`/blog/${post.slug}`}
+        type="article"
+      />
       {/* Post Header */}
       <section className="py-12 bg-secondary">
         <div className="container">

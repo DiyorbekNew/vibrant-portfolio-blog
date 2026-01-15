@@ -7,30 +7,7 @@ import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Search, Hash, ChevronRight, FileText, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { appendIpParam, getApiHeaders } from "@/lib/api";
-
-interface Topic {
-  id: number;
-  title: string;
-  note_count: number;
-}
-
-interface Tag {
-  id: number;
-  name: string;
-}
-
-interface Note {
-  title: string;
-  description: string;
-  tags: Tag[];
-}
-
-interface NotesResponse {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: Note[];
-}
+import type { Topic, Tag, Note, NotesResponse } from "@/types";
 
 const Topics: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");

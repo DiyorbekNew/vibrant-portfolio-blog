@@ -2,14 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { appendIpParam, getApiHeaders } from "@/lib/api";
-
-interface GeneralData {
-  id: number;
-  email: string;
-  phone: string;
-  github: string;
-  linkedin: string;
-}
+import type { GeneralData } from "@/types";
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();

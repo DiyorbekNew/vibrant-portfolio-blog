@@ -4,28 +4,9 @@ import SearchBar from "../components/SearchBar";
 import ProjectCard from "../components/ProjectCard";
 import { useQuery } from "@tanstack/react-query";
 import { appendIpParam, getApiHeaders } from "@/lib/api";
-
-interface Technology {
-  id: number;
-  technology: string;
-}
-
-interface Category {
-  id: number;
-  title: string;
-}
-
-interface Project {
-  id: number;
-  technologies: Technology[];
-  category: Category[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  demo_url?: string;
-  slug: string;
-}
+import type { Project, Category } from "@/types";
+import { ProjectCardSkeleton } from "@/components/LoadingSkeleton";
+import SEO from "@/components/SEO";
 
 const Projects: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
@@ -75,6 +56,11 @@ const Projects: React.FC = () => {
 
   return (
     <Layout>
+      <SEO
+        title="Loyihalar"
+        description="Mening so'nggi ishlarim va shaxsiy loyihalarimni ko'ring. Python backend texnologiyalari bilan yaratilgan loyihalar."
+        url="/projects"
+      />
       <section className="py-12 bg-secondary">
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Loyihalar</h1>
@@ -121,8 +107,10 @@ const Projects: React.FC = () => {
           </div>
           
           {isLoading ? (
-            <div className="text-center py-16">
-              <p className="text-muted-foreground">Yuklanmoqda...</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
+              <ProjectCardSkeleton />
             </div>
           ) : projects.length === 0 ? (
             <div className="text-center py-16">

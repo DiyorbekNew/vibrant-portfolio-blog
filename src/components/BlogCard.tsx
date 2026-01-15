@@ -1,23 +1,6 @@
 import { Link } from "react-router-dom";
 import { Calendar, Eye, Heart } from "lucide-react";
-
-interface Theme {
-  id: number;
-  title: string;
-}
-
-interface BlogPost {
-  id: number;
-  themes: Theme[];
-  title: string;
-  description: string;
-  body: string;
-  image_url: string;
-  created_at: string;
-  slug: string;
-  views_count: number;
-  likes_count: number;
-}
+import type { BlogPost } from "@/types";
 
 interface BlogCardProps {
   post: BlogPost;
@@ -25,26 +8,27 @@ interface BlogCardProps {
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
   return (
-    <div className="bg-card rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
+    <article className="bg-card rounded-lg overflow-hidden shadow-md transition-all hover:shadow-lg">
       <div className="aspect-video w-full overflow-hidden">
         <img 
           src={post.image_url} 
-          alt={post.title} 
+          alt={`${post.title} blog posti rasmi`}
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          loading="lazy"
         />
       </div>
       <div className="p-5">
         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-2">
-          <div className="flex items-center gap-1">
-            <Calendar size={14} />
-            <span>{post.created_at}</span>
+          <div className="flex items-center gap-1" aria-label={`Sana: ${post.created_at}`}>
+            <Calendar size={14} aria-hidden="true" />
+            <time dateTime={post.created_at}>{post.created_at}</time>
           </div>
-          <div className="flex items-center gap-1">
-            <Eye size={14} />
+          <div className="flex items-center gap-1" aria-label={`${post.views_count} ta ko'rish`}>
+            <Eye size={14} aria-hidden="true" />
             <span>{post.views_count}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <Heart size={14} className="text-red-500" />
+          <div className="flex items-center gap-1" aria-label={`${post.likes_count} ta yoqtirish`}>
+            <Heart size={14} className="text-red-500" aria-hidden="true" />
             <span>{post.likes_count}</span>
           </div>
         </div>
@@ -55,12 +39,13 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
         
         <Link 
           to={`/blog/${post.slug}`} 
-          className="text-sm font-medium text-primary hover:underline"
+          className="text-sm font-medium text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded"
+          aria-label={`${post.title} postini batafsil o'qish`}
         >
           Batafsil O'qish
         </Link>
       </div>
-    </div>
+    </article>
   );
 };
 
