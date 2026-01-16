@@ -70,7 +70,7 @@ const Index: React.FC = () => {
         <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
         <div className="container relative z-10">
           <img 
-            src="/public/my_image.jpg" 
+            src="/my_image.jpg" 
             alt="Diyorbek Xazratqulov"
             className="rounded-full w-40 h-40 object-cover border-4 border-primary/20 shadow-xl mx-auto mb-8 animate-fade-in-up"
           />
