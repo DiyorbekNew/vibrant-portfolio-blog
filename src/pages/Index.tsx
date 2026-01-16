@@ -76,8 +76,8 @@ const Index: React.FC = () => {
           <p className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 animate-fade-in">
             👋 Salom, men Diyorbek Xazratqulov
           </p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white leading-tight animate-slide-in-bottom">
-            {generalData?.title || 'Python Backend Dasturchisi'}
+          <h1 className="ext-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-slate-900 dark:text-white leading-tight animate-slide-in-bottom transition-colors">
+            {generalData?.title}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
             {generalData?.short_description}
@@ -109,7 +109,7 @@ const Index: React.FC = () => {
       {/* About Me Details */} 
       <section className="section">
         <div className="container">
-          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
+          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-16 transition-colors">
             Men Haqimda
           </h2>
           <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-muted-foreground">
@@ -121,7 +121,7 @@ const Index: React.FC = () => {
       {/* Work Experience Section */} 
       <section className="section bg-secondary/20">
         <div className="container">
-          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
+          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-16 transition-colors">
             Ish Tajribam
           </h2>
           
@@ -153,7 +153,7 @@ const Index: React.FC = () => {
       <section className="section bg-slate-50/50 dark:bg-zinc-950/50 py-24">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
+            <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-16 transition-colors">
               Ko'nikmalarim
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">

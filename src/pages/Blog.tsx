@@ -65,7 +65,7 @@ const Blog: React.FC = () => {
         <div className="container">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Blog</h1>
           <p className="text-xl text-muted-foreground">
-            Veb-dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar
+            Backend dasturlash bo'yicha fikrlar, qo'llanmalar va ma'lumotlar
           </p>
         </div>
       </section>
