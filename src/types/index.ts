@@ -67,9 +67,33 @@ export interface NotesResponse {
 
 export interface GeneralData {
   id: number;
+  title: string;
+  about: string;
+  short_description: string;
+  cv: string;
   email: string;
   phone: string;
   github: string;
   linkedin: string;
+}
+
+export interface Experience {
+  id: number;
+  title: string;
+  company: string;
+  start_date: string;
+  end_date: string | null;
+  description: string;
+}
+
+export interface Skill {
+  id: number;
+  name: string
+}
+
+export interface SkillCategory {
+  id: number;
+  name: string;
+  skills: Skill[];
 }
 

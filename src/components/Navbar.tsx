@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
   const { theme, setTheme } = useTheme();
 
   const navLinks = [
-    { name: "Bosh sahifa", path: "/" },
+    { name: "Men Haqimda", path: "/" },
     { name: "Loyihalar", path: "/projects" },
     { name: "Blog", path: "/blog" },
     { name: "Mavzular", path: "/topics" }

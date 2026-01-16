@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-4">Haqida</h3>
             <p className="text-muted-foreground mb-4">
-              Python backend loyihalarim, ko'nikmalarim va blog postlarimni namoyish etuvchi professional portfolio. Hamkorlik imkoniyatlari uchun bog'lanishingiz mumkin.
+              {generalData?.short_description}
             </p>
           </div>
           
