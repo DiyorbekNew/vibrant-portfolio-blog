@@ -1,11 +1,10 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Layout from "../components/Layout";
 import SEO from "@/components/SEO";
 import { Github, Linkedin, Briefcase, Code } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { appendIpParam, getApiHeaders, API_BASE_URL } from "@/lib/api";
-import type { GeneralData, Experience, Skill, SkillCategory } from "@/types";
+import type { GeneralData, Experience, SkillCategory } from "@/types";
 
 
 const Index: React.FC = () => {
@@ -77,7 +76,7 @@ const Index: React.FC = () => {
           <p className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 animate-fade-in">
             👋 Salom, men Diyorbek Xazratqulov
           </p>
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent leading-tight animate-slide-in-bottom">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-white leading-tight animate-slide-in-bottom">
             {generalData?.title || 'Python Backend Dasturchisi'}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
@@ -110,7 +109,7 @@ const Index: React.FC = () => {
       {/* About Me Details */} 
       <section className="section">
         <div className="container">
-          <h2 className="section-title text-center text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-16">
+          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
             Men Haqimda
           </h2>
           <div className="max-w-4xl mx-auto space-y-8 text-lg leading-relaxed text-muted-foreground">
@@ -122,7 +121,7 @@ const Index: React.FC = () => {
       {/* Work Experience Section */} 
       <section className="section bg-secondary/20">
         <div className="container">
-          <h2 className="section-title text-center text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-16">
+          <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
             Ish Tajribam
           </h2>
           
@@ -154,7 +153,7 @@ const Index: React.FC = () => {
       <section className="section bg-slate-50/50 dark:bg-zinc-950/50 py-24">
         <div className="container">
           <div className="text-center mb-16">
-            <h2 className="section-title text-center text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent mb-16">
+            <h2 className="section-title text-center text-4xl md:text-5xl font-bold text-white mb-16">
               Ko'nikmalarim
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
