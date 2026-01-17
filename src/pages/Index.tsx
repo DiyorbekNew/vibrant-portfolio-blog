@@ -76,7 +76,7 @@ const Index: React.FC = () => {
           <p className="inline-block px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-6 animate-fade-in">
             👋 Salom, men Diyorbek Xazratqulov
           </p>
-          <h1 className="ext-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-slate-900 dark:text-white leading-tight animate-slide-in-bottom transition-colors">
+          <h1 className="section-title text-center text-4xl md:text-7xl font-bold text-slate-900 dark:text-white mb-16 transition-colors">
             {generalData?.title}
           </h1>
           <p className="text-xl md:text-2xl text-muted-foreground mb-10 max-w-2xl mx-auto leading-relaxed animate-fade-in delay-200">
