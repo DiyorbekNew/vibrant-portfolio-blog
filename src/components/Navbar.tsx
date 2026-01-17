@@ -31,7 +31,7 @@ const Navbar: React.FC = () => {
     <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
       <div className="container py-4 flex justify-between items-center">
         {/* Logo */}
-        <Link to="/" className="text-xl font-semibold">Diyorbek</Link>
+        <Link to="/" className="text-xl font-semibold">Diyorbek Xazratqulov</Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
