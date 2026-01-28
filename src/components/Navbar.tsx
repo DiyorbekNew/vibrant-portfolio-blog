@@ -1,14 +1,9 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Menu, X, Sun, Moon, Monitor } from "lucide-react";
+import { NAV_LINKS } from "@/lib/constants";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 
 const Navbar: React.FC = () => {
@@ -16,34 +11,33 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const { theme, setTheme } = useTheme();
 
-  const navLinks = [
-    { name: "Men Haqimda", path: "/" },
-    { name: "Loyihalar", path: "/projects" },
-    { name: "Blog", path: "/blog" },
-    { name: "Mavzular", path: "/topics" }
-  ];
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
   return (
-    <header className="border-b sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-50">
+    <header className="border-b border-border/50 sticky top-0 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60 z-50 transition-all duration-300">
       <div className="container py-4 flex justify-between items-center">
-        {/* Logo */}
-        <Link to="/" className="text-xl font-semibold">Diyorbek Xazratqulov</Link>
+        {/* Logo with gradient */}
+        <Link to="/" className="text-xl font-bold text-gradient hover:opacity-80 transition-opacity">
+          Diyorbek Xazratqulov
+        </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navLinks.map((link) => (
+        <nav className="hidden md:flex items-center space-x-2">
+          {NAV_LINKS.map((link) => (
             <Link
               key={link.path}
               to={link.path}
               className={cn(
-                "font-medium transition-colors hover:text-primary",
+                "px-4 py-2 rounded-full font-medium transition-all duration-300",
                 location.pathname === link.path
-                  ? "text-primary border-b-2 border-primary"
-                  : "text-muted-foreground"
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:text-primary hover:bg-primary/5"
               )}
             >
               {link.name}
@@ -52,88 +46,60 @@ const Navbar: React.FC = () => {
         </nav>
 
         {/* Desktop Controls */}
-        <div className="hidden md:flex items-center gap-4">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Theme switcher">
-                {theme === 'light' ? (
-                  <Sun className="h-5 w-5" />
-                ) : theme === 'dark' ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Monitor className="h-5 w-5" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                <Sun className="mr-2 h-4 w-4" />
-                <span>Yorug'</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                <Moon className="mr-2 h-4 w-4" />
-                <span>Qorong'u</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                <Monitor className="mr-2 h-4 w-4" />
-                <span>Tizim</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        <div className="hidden md:flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label="Theme switcher"
+            className="rounded-full hover:bg-primary/10 hover:text-primary transition-all duration-300"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
         </div>
 
         {/* Mobile Controls */}
         <div className="md:hidden flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" aria-label="Theme switcher">
-                {theme === 'light' ? (
-                  <Sun className="h-5 w-5" />
-                ) : theme === 'dark' ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Monitor className="h-5 w-5" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
-                <Sun className="mr-2 h-4 w-4" />
-                <span>Yorug'</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
-                <Moon className="mr-2 h-4 w-4" />
-                <span>Qorong'u</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
-                <Monitor className="mr-2 h-4 w-4" />
-                <span>Tizim</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleTheme}
+            aria-label="Theme switcher"
+            className="rounded-full hover:bg-primary/10"
+          >
+            {theme === 'dark' ? (
+              <Sun className="h-5 w-5" />
+            ) : (
+              <Moon className="h-5 w-5" />
+            )}
+          </Button>
           <button
             onClick={toggleMenu}
-            className="text-primary ml-2"
+            className="p-2 rounded-full text-primary hover:bg-primary/10 transition-colors"
             aria-label="Toggle menu"
           >
-            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            {isMenuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>
 
       {/* Mobile Navigation */}
       {isMenuOpen && (
-        <nav className="md:hidden py-4 bg-background/95 backdrop-blur border-t">
-          <div className="container flex flex-col space-y-4">
-            {navLinks.map((link) => (
+        <nav className="md:hidden py-4 bg-background/95 backdrop-blur-xl border-t border-border/50 animate-fade-in">
+          <div className="container flex flex-col space-y-2">
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
                 className={cn(
-                  "py-2 font-medium transition-colors hover:text-primary",
+                  "px-4 py-3 rounded-xl font-medium transition-all duration-300",
                   location.pathname === link.path
-                    ? "text-primary"
-                    : "text-muted-foreground"
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                 )}
                 onClick={() => setIsMenuOpen(false)}
               >
