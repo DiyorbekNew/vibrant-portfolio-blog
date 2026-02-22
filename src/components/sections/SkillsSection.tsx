@@ -29,7 +29,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skillCategories }) => {
                                 className="group relative bg-card/50 backdrop-blur-sm border border-border/50 p-7 rounded-2xl hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-1 h-full"
                             >
                                 {/* Gradient glow on hover */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-gray-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl"></div>
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-t-2xl" />
 
                                 <div className="relative flex items-center gap-3 mb-6">

@@ -14,13 +14,13 @@ const HeroSection: React.FC<HeroSectionProps> = ({ generalData }) => {
 
             {/* Floating Orbs */}
             <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full blur-3xl animate-float"></div>
-            <div className="absolute bottom-20 right-10 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-float-delayed"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-indigo-500/10 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-20 right-10 w-96 h-96 bg-gray-500/15 rounded-full blur-3xl animate-float-delayed"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gray-400/10 rounded-full blur-3xl"></div>
 
             <div className="container relative z-10">
                 {/* Profile Image with Glow */}
                 <div className="relative w-40 h-40 mx-auto mb-8">
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 blur-md opacity-75 animate-pulse-glow"></div>
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-r from-gray-700 via-gray-500 to-gray-400 blur-md opacity-75 animate-pulse-glow"></div>
                     <img
                         src="/my_image.jpg"
                         alt="Diyorbek Xazratqulov"
@@ -49,7 +49,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ generalData }) => {
                         download
                         className="group relative inline-flex items-center px-8 py-4 overflow-hidden rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 border-2 border-primary text-primary hover:text-white"
                     >
-                        <span className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+                        <span className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-600 to-gray-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
                         <span className="relative z-10">CV Yuklab Olish</span>
                     </a>
                 </div>
